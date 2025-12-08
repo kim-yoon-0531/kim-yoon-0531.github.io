@@ -1,0 +1,86 @@
+.hero {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+  opacity: 0.3;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 2rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.hero-title h1 {
+  font-size: 1.2rem;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  color: #666;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.couple-names {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.groom-name,
+.bride-name {
+  font-size: 2rem;
+  font-weight: 400;
+  color: #333;
+  letter-spacing: 0.1em;
+}
+
+.and {
+  font-size: 1.5rem;
+  color: #999;
+  font-weight: 300;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 480px) {
+  .groom-name,
+  .bride-name {
+    font-size: 1.6rem;
+  }
+  
+  .and {
+    font-size: 1.2rem;
+  }
+  
+  .hero-title h1 {
+    font-size: 1rem;
+  }
+}
+
+

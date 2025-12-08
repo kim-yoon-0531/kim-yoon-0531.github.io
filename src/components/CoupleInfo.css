@@ -1,0 +1,76 @@
+.couple-info {
+  padding: 3rem 2rem;
+  background: #f8f9fa;
+}
+
+.couple-info-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.couple-section {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.person-card {
+  flex: 1;
+  min-width: 200px;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.person-label {
+  font-size: 0.9rem;
+  color: #999;
+  margin-bottom: 1rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+}
+
+.person-name {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+.person-name-en {
+  font-size: 0.9rem;
+  color: #999;
+  margin-bottom: 1rem;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.person-parents {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  font-weight: 300;
+}
+
+@media (max-width: 480px) {
+  .couple-section {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .person-card {
+    min-width: 100%;
+  }
+  
+  .person-name {
+    font-size: 1.5rem;
+  }
+}
+
+

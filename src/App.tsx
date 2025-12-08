@@ -1,21 +1,25 @@
-import { useState } from 'react'
 import './App.css'
+import Contact from './components/Contact'
+import CoupleInfo from './components/CoupleInfo'
+import DateInfo from './components/DateInfo'
+import Gallery from './components/Gallery'
+import Hero from './components/Hero'
+import Message from './components/Message'
+import VenueInfo from './components/VenueInfo'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-      <>
-        <h1>Sangseon & Seulgi Are Getting Married</h1>
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>
-            Like {count}
-          </button>
-        </div>
-        <div>
-          2026.05.31
-        </div>
-      </>
+    <div className="app">
+      <Hero />
+      <main className="main">
+        <DateInfo />
+        <CoupleInfo />
+        <Message />
+        <Gallery />
+        <VenueInfo />
+        <Contact />
+      </main>
+    </div>
   )
 }
 

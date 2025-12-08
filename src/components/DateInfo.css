@@ -1,0 +1,114 @@
+.date-info {
+  padding: 3rem 2rem;
+  background: #fff;
+  text-align: center;
+}
+
+.date-info-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.date-main {
+  margin-bottom: 2rem;
+}
+
+.date-number {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: #333;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.date-day {
+  font-size: 1.2rem;
+  color: #666;
+  font-weight: 300;
+}
+
+.time-info {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.time-label {
+  font-size: 1rem;
+  color: #999;
+  font-weight: 300;
+}
+
+.time-value {
+  font-size: 1.5rem;
+  color: #333;
+  font-weight: 400;
+}
+
+.dday {
+  margin-top: 1rem;
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  background: #333;
+  color: #fff;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+}
+
+.countdown {
+  margin-top: 1.5rem;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 12px;
+  background: transparent;
+  color: #111;
+}
+
+.countdown-label {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.countdown-number {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.separator {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0.2rem;
+}
+
+@media (max-width: 480px) {
+  .date-number {
+    font-size: 2rem;
+  }
+  
+  .date-day {
+    font-size: 1rem;
+  }
+  
+  .time-value {
+    font-size: 1.3rem;
+  }
+
+  .countdown {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.35rem 0.6rem;
+  }
+}
+
+

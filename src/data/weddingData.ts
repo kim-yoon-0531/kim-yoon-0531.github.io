@@ -11,7 +11,7 @@ export const weddingData: WeddingData = {
     bride: {
       name: '윤슬기',
       nameEn: 'Seulgi Yoon',
-      parents: '윤춘섭 · 고수희희',
+      parents: '윤춘섭 · 고수희',
       phone: '010-0000-0000',
     },
   },

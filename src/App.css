@@ -1,6 +1,8 @@
 .app {
   min-height: 100vh;
-  background: #f0f2f5;
+  /*background: #f0f2f5;*/
+  background-image: url('/images/bg/bgImage.png');
+  background-size: 100% 100%;
   color: #1f1b16;
 }
 
@@ -23,8 +25,9 @@
 }
 
 .landing-title {
-  font-family: sans-serif;
-  font-size: 24px;
+  font-family: Nanum Pen Script;
+  font-weight: 400;
+  font-size: 28px;
   margin-bottom: 24px;
 }
 

@@ -1,13 +1,6 @@
 .app {
   min-height: 100vh;
-  /*background: #f0f2f5;*/
   color: #1f1b16;
-}
-
-.main {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
 }
 
 .landing {
@@ -18,8 +11,6 @@
   box-sizing: border-box;
   margin: 0 auto;
   max-width: 600px;
-  background-image: url('/images/bg/bgImage.png');
-  background-size: 100% 100%;
 }
 
 .landing-content {
@@ -27,45 +18,7 @@
 }
 
 .landing-title {
-  font-family: Nanum Pen Script;
+  font-family: 'Gowun Dodum', serif;
   font-weight: 400;
-  font-size: 28px;
-  margin-bottom: 24px;
-}
-
-.landing-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.landing-button {
-  padding: 12px 20px;
-  border-radius: 8px;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.landing-button.primary {
-  background-color: #1f1b16;
-  color: white;
-}
-
-.landing-button.secondary {
-  background-color: white;
-  color: #1f1b16;
-}
-
-.back-button {
-  position: sticky;
-  top: 0;
-  width: 100%;
-  border: none;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 10px 16px;
-  font-size: 14px;
-  text-align: left;
-  cursor: pointer;
-  z-index: 10;
+  font-size: 24px;
 }

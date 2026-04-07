@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>청첩장 C안 - 내추럴 웜</title>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@100;200;300;400;500&family=Lora:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sage: #8B9A7B;
+  --sage-light: #B5C4A8;
+  --sage-pale: #E8EDE3;
+  --warm-cream: #FBF8F3;
+  --warm-beige: #F3ECE0;
+  --warm-tan: #E6D9C7;
+  --terracotta: #C4876E;
+  --terracotta-light: #D4A48E;
+  --brown-dark: #5C4A3A;
+  --brown-mid: #7D6B5A;
+  --brown-light: #A89888;
+  --text-body: #6B5D4F;
+  --white: #FFFFFF;
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  color: var(--brown-dark);
+  background: var(--warm-tan);
+  display: flex;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+}
+
+.invitation {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  background: var(--warm-cream);
+  position: relative;
+}
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg,
+    rgba(139,154,123,0.15) 0%,
+    rgba(251,248,243,0.0) 30%,
+    rgba(251,248,243,0.0) 70%,
+    rgba(198,187,171,0.3) 100%
+  ), var(--warm-cream);
+}
+
+/* Watercolor-style decorative blob */
+.hero-decor-top {
+  position: absolute;
+  top: -60px;
+  left: -40px;
+  width: 280px;
+  height: 280px;
+  border-radius: 60% 40% 50% 50%;
+  background: radial-gradient(ellipse, rgba(139,154,123,0.12) 0%, transparent 70%);
+  z-index: 0;
+}
+
+.hero-decor-bottom {
+  position: absolute;
+  bottom: -40px;
+  right: -60px;
+  width: 320px;
+  height: 320px;
+  border-radius: 40% 60% 50% 50%;
+  background: radial-gradient(ellipse, rgba(196,135,110,0.1) 0%, transparent 70%);
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-flower-top {
+  font-size: 2rem;
+  margin-bottom: 32px;
+  opacity: 0.15;
+  letter-spacing: 20px;
+}
+
+.hero-label {
+  font-family: 'Lora', serif;
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 6px;
+  color: var(--sage);
+  margin-bottom: 32px;
+}
+
+.hero-date-line {
+  font-family: 'Lora', serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--brown-light);
+  letter-spacing: 4px;
+  margin-bottom: 40px;
+}
+
+.hero-names-kr {
+  font-family: 'Gowun Batang', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--brown-dark);
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+}
+
+.hero-heart {
+  font-family: 'Lora', serif;
+  font-size: 1.2rem;
+  color: var(--terracotta-light);
+  margin: 12px 0;
+  opacity: 0.6;
+}
+
+.hero-subtitle {
+  font-family: 'Gowun Batang', serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--brown-light);
+  letter-spacing: 6px;
+  margin-top: 32px;
+}
+
+.hero-photo-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 220px;
+  height: 300px;
+  border: 1px dashed var(--warm-tan);
+  border-radius: 120px 120px 8px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.hero-photo-frame span {
+  font-size: 0.65rem;
+  color: var(--brown-light);
+  letter-spacing: 2px;
+}
+
+/* Leaf decoration line */
+.leaf-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 0 auto;
+  padding: 8px 0;
+}
+
+.leaf-line {
+  width: 50px;
+  height: 1px;
+  background: var(--sage-light);
+}
+
+.leaf-icon {
+  color: var(--sage);
+  font-size: 0.9rem;
+  opacity: 0.5;
+}
+
+/* ===== SECTIONS ===== */
+section {
+  padding: 72px 32px;
+}
+
+.sec-title {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.sec-title-en {
+  font-family: 'Lora', serif;
+  font-size: 0.65rem;
+  font-weight: 300;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 8px;
+}
+
+.sec-title-kr {
+  font-family: 'Gowun Batang', serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--brown-dark);
+}
+
+/* ===== DATE ===== */
+.date-section {
+  background: var(--white);
+  text-align: center;
+  border-radius: 0;
+  position: relative;
+}
+
+.date-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 8px;
+}
+
+.date-year-month {
+  font-family: 'Gowun Batang', serif;
+  font-size: 0.9rem;
+  color: var(--brown-light);
+  letter-spacing: 2px;
+}
+
+.date-day-big {
+  font-family: 'Lora', serif;
+  font-size: 4.5rem;
+  font-weight: 300;
+  color: var(--terracotta);
+  line-height: 1;
+}
+
+.date-day-name {
+  font-family: 'Gowun Batang', serif;
+  font-size: 0.85rem;
+  color: var(--brown-light);
+  letter-spacing: 4px;
+}
+
+.date-time-row {
+  margin-top: 12px;
+  font-family: 'Gowun Batang', serif;
+  font-size: 0.9rem;
+  color: var(--brown-mid);
+  letter-spacing: 2px;
+}
+
+/* Calendar */
+.calendar-warm {
+  margin-top: 40px;
+  padding: 24px;
+  background: var(--warm-cream);
+  border-radius: 16px;
+}
+
+.cal-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 8px;
+}
+
+.cal-header span {
+  text-align: center;
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--brown-light);
+  letter-spacing: 1px;
+  padding-bottom: 8px;
+}
+
+.cal-header span:first-child { color: var(--terracotta-light); }
+
+.cal-body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.cal-cell {
+  text-align: center;
+  padding: 8px 0;
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--brown-mid);
+}
+
+.cal-cell.sun { color: var(--terracotta-light); }
+.cal-cell.wedding {
+  position: relative;
+}
+.cal-cell.wedding::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--sage);
+  z-index: -1;
+}
+.cal-cell.wedding {
+  color: var(--white);
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
+}
+
+/* D-day */
+.dday-warm {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 28px;
+  background: var(--sage-pale);
+  border-radius: 16px;
+}
+
+.dday-warm-item {
+  text-align: center;
+}
+
+.dday-warm-num {
+  font-family: 'Lora', serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--sage);
+}
+
+.dday-warm-unit {
+  font-size: 0.6rem;
+  color: var(--brown-light);
+  letter-spacing: 2px;
+  margin-top: 4px;
+}
+
+/* ===== GREETING ===== */
+.greeting-section {
+  background: var(--warm-cream);
+  text-align: center;
+  position: relative;
+}
+
+.greeting-quote-mark {
+  font-family: 'Lora', serif;
+  font-size: 3rem;
+  color: var(--sage-light);
+  opacity: 0.4;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.greeting-text {
+  font-family: 'Gowun Batang', serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 2.4;
+  color: var(--text-body);
+  white-space: pre-line;
+}
+
+/* ===== COUPLE ===== */
+.couple-section {
+  background: var(--white);
+  text-align: center;
+}
+
+.couple-pair {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+
+.couple-card-warm {
+  flex: 1;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.couple-card-warm:first-child {
+  border-right: 1px solid var(--warm-beige);
+}
+
+.couple-role-warm {
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: var(--sage);
+  padding: 4px 12px;
+  background: var(--sage-pale);
+  border-radius: 12px;
+}
+
+.couple-name-warm {
+  font-family: 'Gowun Batang', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--brown-dark);
+  margin-top: 8px;
+}
+
+.couple-en-warm {
+  font-family: 'Lora', serif;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--brown-light);
+  letter-spacing: 1px;
+}
+
+.couple-parents-warm {
+  margin-top: 12px;
+  font-size: 0.7rem;
+  color: var(--brown-light);
+  line-height: 1.8;
+}
+
+.couple-parents-warm .parent-label {
+  font-size: 0.6rem;
+  color: var(--sage);
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ===== GALLERY ===== */
+.gallery-section {
+  background: var(--warm-cream);
+  padding-bottom: 40px;
+}
+
+.gallery-featured {
+  width: 100%;
+  aspect-ratio: 4/5;
+  background: linear-gradient(135deg, var(--warm-beige) 0%, var(--warm-tan) 100%);
+  border-radius: 200px 200px 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.gallery-featured span {
+  font-size: 0.7rem;
+  color: var(--brown-light);
+  letter-spacing: 2px;
+}
+
+.gallery-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.gallery-thumb {
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, var(--warm-beige) 0%, var(--warm-tan) 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gallery-thumb span {
+  font-size: 0.55rem;
+  color: var(--brown-light);
+  letter-spacing: 1px;
+}
+
+.gallery-thumb.rounded-lg {
+  border-radius: 16px;
+}
+
+.gallery-more-btn {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid var(--sage-light);
+  border-radius: 28px;
+  background: transparent;
+  font-family: 'Gowun Batang', serif;
+  font-size: 0.8rem;
+  color: var(--sage);
+  cursor: pointer;
+  letter-spacing: 2px;
+}
+
+/* ===== VENUE ===== */
+.venue-section {
+  background: var(--white);
+  text-align: center;
+}
+
+.venue-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--sage-pale);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: var(--sage);
+  font-size: 1rem;
+}
+
+.venue-name-warm {
+  font-family: 'Gowun Batang', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--brown-dark);
+  margin-bottom: 8px;
+}
+
+.venue-addr-warm {
+  font-size: 0.8rem;
+  font-weight: 200;
+  color: var(--brown-light);
+  line-height: 1.8;
+  margin-bottom: 32px;
+}
+
+.venue-map-warm {
+  width: 100%;
+  height: 220px;
+  background: var(--warm-beige);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.venue-map-warm span {
+  font-size: 0.7rem;
+  color: var(--brown-light);
+  letter-spacing: 2px;
+}
+
+.venue-btns-warm {
+  display: flex;
+  gap: 8px;
+}
+
+.venue-btn-warm {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: var(--sage-pale);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.75rem;
+  color: var(--sage);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.venue-btn-warm:hover {
+  background: var(--sage);
+  color: var(--white);
+}
+
+/* ===== ACCOUNT ===== */
+.account-section {
+  background: var(--warm-cream);
+  text-align: center;
+}
+
+.account-tabs-warm {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.account-tab-warm {
+  padding: 10px 28px;
+  border: none;
+  border-radius: 24px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: var(--white);
+  color: var(--brown-light);
+}
+
+.account-tab-warm.active {
+  background: var(--sage);
+  color: var(--white);
+}
+
+.account-card-warm {
+  padding: 24px;
+  background: var(--white);
+  border-radius: 16px;
+  margin-bottom: 10px;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.account-card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.acct-bank {
+  font-size: 0.65rem;
+  color: var(--sage);
+  letter-spacing: 2px;
+  font-weight: 400;
+}
+
+.acct-num {
+  font-family: 'Lora', serif;
+  font-size: 0.95rem;
+  color: var(--brown-dark);
+  letter-spacing: 1px;
+}
+
+.acct-holder {
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: var(--brown-light);
+}
+
+.acct-copy {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background: var(--sage-pale);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.65rem;
+  color: var(--sage);
+  cursor: pointer;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  padding: 60px 32px 40px;
+  text-align: center;
+  background: var(--sage);
+  color: rgba(255,255,255,0.7);
+}
+
+.footer-names-warm {
+  font-family: 'Gowun Batang', serif;
+  font-size: 1.3rem;
+  color: var(--white);
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+}
+
+.footer-date-warm {
+  font-family: 'Lora', serif;
+  font-size: 0.75rem;
+  letter-spacing: 4px;
+  opacity: 0.6;
+}
+
+.footer-msg {
+  margin-top: 24px;
+  font-size: 0.75rem;
+  font-weight: 200;
+  opacity: 0.5;
+  letter-spacing: 1px;
+}
+
+/* ===== DESIGN LABEL ===== */
+.design-label {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: var(--sage);
+  color: var(--white);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(139,154,123,0.3);
+}
+</style>
+</head>
+<body>
+<div class="design-label">C안 — 내추럴 웜</div>
+
+<div class="invitation">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-decor-top"></div>
+    <div class="hero-decor-bottom"></div>
+    <div class="hero-photo-frame"><span>MAIN PHOTO</span></div>
+
+    <div class="hero-content">
+      <div class="hero-label">We're Getting Married</div>
+      <div class="hero-names-kr">김상선</div>
+      <div class="hero-heart">&</div>
+      <div class="hero-names-kr">윤슬기</div>
+      <div class="hero-date-line">2026. 05. 31. SUN PM 12:20</div>
+      <div class="hero-subtitle">결 혼 합 니 다</div>
+    </div>
+  </section>
+
+  <!-- DATE -->
+  <section class="date-section">
+    <div class="sec-title">
+      <div class="sec-title-en">Save the Date</div>
+      <div class="sec-title-kr">날짜 안내</div>
+    </div>
+
+    <div class="date-main-row">
+      <div class="date-year-month">2026년<br>5월</div>
+      <div class="date-day-big">31</div>
+      <div class="date-day-name">일요일<br>오후 12:20</div>
+    </div>
+
+    <div class="calendar-warm">
+      <div class="cal-header">
+        <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+      </div>
+      <div class="cal-body">
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell">1</div>
+        <div class="cal-cell">2</div>
+        <div class="cal-cell sun">3</div>
+        <div class="cal-cell">4</div>
+        <div class="cal-cell">5</div>
+        <div class="cal-cell">6</div>
+        <div class="cal-cell">7</div>
+        <div class="cal-cell">8</div>
+        <div class="cal-cell">9</div>
+        <div class="cal-cell sun">10</div>
+        <div class="cal-cell">11</div>
+        <div class="cal-cell">12</div>
+        <div class="cal-cell">13</div>
+        <div class="cal-cell">14</div>
+        <div class="cal-cell">15</div>
+        <div class="cal-cell">16</div>
+        <div class="cal-cell sun">17</div>
+        <div class="cal-cell">18</div>
+        <div class="cal-cell">19</div>
+        <div class="cal-cell">20</div>
+        <div class="cal-cell">21</div>
+        <div class="cal-cell">22</div>
+        <div class="cal-cell">23</div>
+        <div class="cal-cell sun">24</div>
+        <div class="cal-cell">25</div>
+        <div class="cal-cell">26</div>
+        <div class="cal-cell">27</div>
+        <div class="cal-cell">28</div>
+        <div class="cal-cell">29</div>
+        <div class="cal-cell">30</div>
+        <div class="cal-cell sun wedding">31</div>
+      </div>
+    </div>
+
+    <div class="dday-warm">
+      <div class="dday-warm-item">
+        <div class="dday-warm-num">73</div>
+        <div class="dday-warm-unit">DAYS</div>
+      </div>
+      <div class="dday-warm-item">
+        <div class="dday-warm-num">12</div>
+        <div class="dday-warm-unit">HRS</div>
+      </div>
+      <div class="dday-warm-item">
+        <div class="dday-warm-num">30</div>
+        <div class="dday-warm-unit">MIN</div>
+      </div>
+      <div class="dday-warm-item">
+        <div class="dday-warm-num">45</div>
+        <div class="dday-warm-unit">SEC</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEAF DIVIDER -->
+  <div class="leaf-divider">
+    <div class="leaf-line"></div>
+    <span class="leaf-icon">&leaf;</span>
+    <div class="leaf-line"></div>
+  </div>
+
+  <!-- GREETING -->
+  <section class="greeting-section">
+    <div class="sec-title">
+      <div class="sec-title-en">Invitation</div>
+      <div class="sec-title-kr">초대합니다</div>
+    </div>
+
+    <div class="greeting-quote-mark">"</div>
+    <p class="greeting-text">소중한 분들을 초대합니다.
+저희 두 사람이 사랑으로 하나가 되어
+새로운 인생을 시작하려 합니다.
+귀한 걸음 하시어 축복해 주시면
+더없는 기쁨이겠습니다.</p>
+  </section>
+
+  <!-- COUPLE -->
+  <section class="couple-section">
+    <div class="sec-title">
+      <div class="sec-title-en">The Couple</div>
+      <div class="sec-title-kr">신랑 그리고 신부</div>
+    </div>
+
+    <div class="couple-pair">
+      <div class="couple-card-warm">
+        <span class="couple-role-warm">신 랑</span>
+        <div class="couple-name-warm">김상선</div>
+        <div class="couple-en-warm">Sangseon Kim</div>
+        <div class="couple-parents-warm">
+          <span class="parent-label">부모님</span>
+          김영배 · 양영심<br>의 아들
+        </div>
+      </div>
+      <div class="couple-card-warm">
+        <span class="couple-role-warm">신 부</span>
+        <div class="couple-name-warm">윤슬기</div>
+        <div class="couple-en-warm">Seulgi Yoon</div>
+        <div class="couple-parents-warm">
+          <span class="parent-label">부모님</span>
+          윤춘섭 · 고수희<br>의 딸
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="gallery-section">
+    <div class="sec-title">
+      <div class="sec-title-en">Our Moments</div>
+      <div class="sec-title-kr">갤러리</div>
+    </div>
+
+    <div class="gallery-featured"><span>Featured Photo</span></div>
+
+    <div class="gallery-row">
+      <div class="gallery-thumb"><span>01</span></div>
+      <div class="gallery-thumb"><span>02</span></div>
+      <div class="gallery-thumb"><span>03</span></div>
+    </div>
+    <div class="gallery-row">
+      <div class="gallery-thumb"><span>04</span></div>
+      <div class="gallery-thumb"><span>05</span></div>
+      <div class="gallery-thumb"><span>06</span></div>
+    </div>
+    <div class="gallery-row">
+      <div class="gallery-thumb"><span>07</span></div>
+      <div class="gallery-thumb"><span>08</span></div>
+      <div class="gallery-thumb"><span>09</span></div>
+    </div>
+    <div class="gallery-row">
+      <div class="gallery-thumb"><span>10</span></div>
+      <div class="gallery-thumb"><span>11</span></div>
+      <div class="gallery-thumb"><span>12</span></div>
+    </div>
+    <div class="gallery-row">
+      <div class="gallery-thumb"><span>13</span></div>
+      <div class="gallery-thumb"><span>14</span></div>
+      <div class="gallery-thumb"><span>15</span></div>
+    </div>
+    <div class="gallery-row">
+      <div class="gallery-thumb"><span>16</span></div>
+      <div class="gallery-thumb"><span>17</span></div>
+      <div class="gallery-thumb"><span>18</span></div>
+    </div>
+    <div class="gallery-row">
+      <div class="gallery-thumb"><span>19</span></div>
+      <div class="gallery-thumb"><span>20</span></div>
+      <div class="gallery-thumb rounded-lg" style="visibility:hidden;"><span></span></div>
+    </div>
+
+    <button class="gallery-more-btn">전체 사진 보기</button>
+  </section>
+
+  <!-- VENUE -->
+  <section class="venue-section">
+    <div class="sec-title">
+      <div class="sec-title-en">Location</div>
+      <div class="sec-title-kr">오시는 길</div>
+    </div>
+
+    <div class="venue-icon">&#9906;</div>
+    <div class="venue-name-warm">월드컵컨벤션 2F 임페리얼볼룸홀</div>
+    <div class="venue-addr-warm">
+      서울 마포구 월드컵로 240<br>
+      (성산동 서울월드컵경기장 서측)
+    </div>
+
+    <div class="venue-map-warm"><span>NAVER MAP</span></div>
+
+    <div class="venue-btns-warm">
+      <button class="venue-btn-warm">네이버 지도</button>
+      <button class="venue-btn-warm">카카오 내비</button>
+      <button class="venue-btn-warm">주소 복사</button>
+    </div>
+  </section>
+
+  <!-- ACCOUNT -->
+  <section class="account-section">
+    <div class="sec-title">
+      <div class="sec-title-en">Gift</div>
+      <div class="sec-title-kr">마음 전하기</div>
+    </div>
+
+    <div class="account-tabs-warm">
+      <button class="account-tab-warm active">신랑측</button>
+      <button class="account-tab-warm">신부측</button>
+    </div>
+
+    <div class="account-card-warm">
+      <div class="account-card-left">
+        <span class="acct-bank">국민은행</span>
+        <span class="acct-num">000-0000-0000-00</span>
+        <span class="acct-holder">김상선</span>
+      </div>
+      <button class="acct-copy">복사</button>
+    </div>
+
+    <div class="account-card-warm">
+      <div class="account-card-left">
+        <span class="acct-bank">국민은행</span>
+        <span class="acct-num">000-0000-0000-00</span>
+        <span class="acct-holder">김영배 (아버지)</span>
+      </div>
+      <button class="acct-copy">복사</button>
+    </div>
+
+    <div class="account-card-warm">
+      <div class="account-card-left">
+        <span class="acct-bank">국민은행</span>
+        <span class="acct-num">000-0000-0000-00</span>
+        <span class="acct-holder">양영심 (어머니)</span>
+      </div>
+      <button class="acct-copy">복사</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-names-warm">상선 & 슬기</div>
+    <div class="footer-date-warm">2026. 05. 31</div>
+    <div class="footer-msg">Thank you for celebrating with us</div>
+  </div>
+
+</div>
+</body>
+</html>

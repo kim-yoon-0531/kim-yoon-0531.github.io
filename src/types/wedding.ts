@@ -1,3 +1,10 @@
+export interface AccountInfo {
+  name: string;
+  relation: string;
+  bank: string;
+  account: string;
+}
+
 export interface CoupleInfo {
   groom: {
     name: string;
@@ -14,9 +21,9 @@ export interface CoupleInfo {
 }
 
 export interface WeddingDate {
-  date: string; // YYYY.MM.DD
-  time: string; // HH:MM
-  dayOfWeek: string; // 요일
+  date: string;
+  time: string;
+  dayOfWeek: string;
 }
 
 export interface Venue {
@@ -28,12 +35,25 @@ export interface Venue {
   longitude?: number;
 }
 
+export interface MapInfo {
+  link: string;
+  icon: string;
+  name: string;
+}
+
 export interface WeddingData {
   couple: CoupleInfo;
   date: WeddingDate;
   venue: Venue;
   gallery?: string[];
   message?: string;
+  accounts?: {
+    groom: AccountInfo[];
+    bride: AccountInfo[];
+  };
+  maps?: {
+    tmap: MapInfo;
+    kakao: MapInfo;
+    naver: MapInfo;
+  };
 }
-
-

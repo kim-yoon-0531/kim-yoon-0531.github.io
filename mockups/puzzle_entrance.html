@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>퍼즐 입장 데모</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Serif KR', serif;
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.app {
+  width: 100%;
+  max-width: 430px;
+  height: 100vh;
+  min-height: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== 퍼즐 화면 ===== */
+.puzzle-screen {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #F8F5F0 0%, #EDE7DD 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.puzzle-screen.done {
+  opacity: 0;
+  transform: scale(1.05);
+  pointer-events: none;
+}
+
+.puzzle-title {
+  font-size: 0.7rem;
+  font-weight: 300;
+  letter-spacing: 5px;
+  color: #A89888;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.puzzle-subtitle {
+  font-size: 1rem;
+  font-weight: 300;
+  color: #5C4A3A;
+  margin-bottom: 32px;
+  letter-spacing: 2px;
+}
+
+/* 퍼즐 보드 */
+.puzzle-board {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  background: rgba(0,0,0,0.03);
+  border-radius: 8px;
+  border: 2px dashed rgba(168,152,136,0.3);
+}
+
+/* 2x2 그리드 가이드 */
+.slot {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border: 1px dashed rgba(168,152,136,0.2);
+}
+
+.slot[data-pos="0"] { top: 0; left: 0; }
+.slot[data-pos="1"] { top: 0; left: 150px; }
+.slot[data-pos="2"] { top: 150px; left: 0; }
+.slot[data-pos="3"] { top: 150px; left: 150px; }
+
+/* 퍼즐 조각 */
+.piece {
+  position: absolute;
+  width: 148px;
+  height: 148px;
+  border-radius: 6px;
+  background-size: 300px 300px;
+  cursor: grab;
+  transition: box-shadow 0.2s, transform 0.15s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  z-index: 5;
+}
+
+.piece:active { cursor: grabbing; }
+
+.piece.dragging {
+  z-index: 100;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  transform: scale(1.06);
+  transition: box-shadow 0.15s, transform 0.05s;
+}
+
+.piece.snapped {
+  cursor: default;
+  box-shadow: none;
+  border-radius: 0;
+  transition: all 0.3s cubic-bezier(.25,.1,.25,1);
+}
+
+/* 조각별 이미지 위치 */
+.piece[data-id="0"] { background-position: 0 0; }
+.piece[data-id="1"] { background-position: -150px 0; }
+.piece[data-id="2"] { background-position: 0 -150px; }
+.piece[data-id="3"] { background-position: -150px -150px; }
+
+/* 힌트 텍스트 */
+.puzzle-hint {
+  margin-top: 24px;
+  font-size: 0.75rem;
+  font-weight: 200;
+  color: #A89888;
+  letter-spacing: 1px;
+  transition: opacity 0.3s;
+}
+
+.puzzle-progress {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(168,152,136,0.25);
+  transition: all 0.3s;
+}
+
+.progress-dot.filled {
+  background: #B8936A;
+  transform: scale(1.2);
+}
+
+/* ===== 완성 오버레이 ===== */
+.complete-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.complete-overlay.show {
+  opacity: 1;
+}
+
+.complete-text {
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: #5C4A3A;
+  letter-spacing: 4px;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeUpIn 0.6s ease forwards 0.4s;
+}
+
+@keyframes fadeUpIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 입장 화면 (청첩장) ===== */
+.wedding-screen {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.wedding-screen.show {
+  opacity: 1;
+}
+
+.wedding-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wedding-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.15);
+}
+
+.wedding-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+}
+
+.wedding-label {
+  font-size: 0.65rem;
+  font-weight: 300;
+  letter-spacing: 6px;
+  opacity: 0.6;
+  margin-bottom: 32px;
+}
+
+.wedding-names {
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+}
+
+.wedding-and {
+  font-size: 1rem;
+  font-weight: 200;
+  opacity: 0.5;
+  margin: 8px 0;
+  font-style: italic;
+}
+
+.wedding-date {
+  font-size: 0.8rem;
+  font-weight: 200;
+  letter-spacing: 4px;
+  opacity: 0.5;
+  margin-top: 32px;
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- 퍼즐 화면 -->
+  <div class="puzzle-screen" id="puzzleScreen">
+    <div class="puzzle-title">Wedding Invitation</div>
+    <div class="puzzle-subtitle">퍼즐을 맞춰 입장해주세요</div>
+
+    <div class="puzzle-board" id="board">
+      <div class="slot" data-pos="0"></div>
+      <div class="slot" data-pos="1"></div>
+      <div class="slot" data-pos="2"></div>
+      <div class="slot" data-pos="3"></div>
+      <!-- 퍼즐 조각은 JS로 생성 -->
+    </div>
+
+    <div class="puzzle-hint" id="hint">조각을 드래그해서 올바른 위치에 놓아주세요</div>
+
+    <div class="puzzle-progress">
+      <div class="progress-dot" id="dot0"></div>
+      <div class="progress-dot" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+      <div class="progress-dot" id="dot3"></div>
+    </div>
+  </div>
+
+  <!-- 완성 오버레이 -->
+  <div class="complete-overlay" id="completeOverlay">
+    <div class="complete-text">입장합니다</div>
+  </div>
+
+  <!-- 입장 후 화면 (청첩장 메인) -->
+  <div class="wedding-screen" id="weddingScreen">
+    <img src="images/main/background.png" alt="배경" class="wedding-bg">
+    <div class="wedding-overlay"></div>
+    <div class="wedding-content">
+      <div class="wedding-label">Wedding Invitation</div>
+      <div class="wedding-names">김상선</div>
+      <div class="wedding-and">and</div>
+      <div class="wedding-names">윤슬기</div>
+      <div class="wedding-date">2026. 05. 31. SUN</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const IMG_SRC = 'images/img_1.png';
+const BOARD_SIZE = 300;
+const CELL = 150;
+const SNAP_DIST = 40; // 스냅 거리(px)
+
+const board = document.getElementById('board');
+const puzzleScreen = document.getElementById('puzzleScreen');
+const completeOverlay = document.getElementById('completeOverlay');
+const weddingScreen = document.getElementById('weddingScreen');
+
+let pieces = [];
+let snapped = [false, false, false, false];
+
+/* ---- 초기 위치 (보드 주변에 흩어놓기) ---- */
+const scatterPositions = [
+  { x: 10,  y: -20 },
+  { x: 160, y: -30 },
+  { x: -10, y: 155 },
+  { x: 170, y: 165 },
+];
+
+/* ---- 셔플 ---- */
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/* ---- 퍼즐 조각 생성 ---- */
+function createPieces() {
+  const order = shuffle([0, 1, 2, 3]);
+
+  order.forEach((id, idx) => {
+    const el = document.createElement('div');
+    el.className = 'piece';
+    el.dataset.id = String(id);
+    el.style.backgroundImage = `url(${IMG_SRC})`;
+
+    // 셔플된 위치에 배치
+    const pos = scatterPositions[idx];
+    el.style.left = pos.x + 'px';
+    el.style.top = pos.y + 'px';
+
+    board.appendChild(el);
+    pieces.push(el);
+
+    // 터치 & 마우스 이벤트
+    el.addEventListener('mousedown', onDragStart);
+    el.addEventListener('touchstart', onDragStart, { passive: false });
+  });
+}
+
+/* ---- 드래그 로직 ---- */
+let dragEl = null;
+let offsetX = 0;
+let offsetY = 0;
+
+function getPos(e) {
+  if (e.touches) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  return { x: e.clientX, y: e.clientY };
+}
+
+function onDragStart(e) {
+  e.preventDefault();
+  const el = e.currentTarget;
+  if (el.classList.contains('snapped')) return;
+
+  dragEl = el;
+  dragEl.classList.add('dragging');
+
+  const rect = board.getBoundingClientRect();
+  const pos = getPos(e);
+  const elLeft = parseFloat(el.style.left) || 0;
+  const elTop = parseFloat(el.style.top) || 0;
+
+  offsetX = pos.x - rect.left - elLeft;
+  offsetY = pos.y - rect.top - elTop;
+
+  // 맨 위로
+  dragEl.style.zIndex = '100';
+
+  document.addEventListener('mousemove', onDragMove);
+  document.addEventListener('mouseup', onDragEnd);
+  document.addEventListener('touchmove', onDragMove, { passive: false });
+  document.addEventListener('touchend', onDragEnd);
+}
+
+function onDragMove(e) {
+  if (!dragEl) return;
+  e.preventDefault();
+
+  const rect = board.getBoundingClientRect();
+  const pos = getPos(e);
+  let newX = pos.x - rect.left - offsetX;
+  let newY = pos.y - rect.top - offsetY;
+
+  // 보드 범위 제한 (약간 여유)
+  newX = Math.max(-60, Math.min(BOARD_SIZE - CELL + 60, newX));
+  newY = Math.max(-60, Math.min(BOARD_SIZE - CELL + 60, newY));
+
+  dragEl.style.left = newX + 'px';
+  dragEl.style.top = newY + 'px';
+}
+
+function onDragEnd(e) {
+  if (!dragEl) return;
+  dragEl.classList.remove('dragging');
+
+  const id = parseInt(dragEl.dataset.id);
+  // 정답 위치
+  const correctX = (id % 2) * CELL;
+  const correctY = Math.floor(id / 2) * CELL;
+
+  const curX = parseFloat(dragEl.style.left) || 0;
+  const curY = parseFloat(dragEl.style.top) || 0;
+
+  const dist = Math.sqrt((curX - correctX) ** 2 + (curY - correctY) ** 2);
+
+  if (dist < SNAP_DIST) {
+    // 스냅!
+    dragEl.style.left = correctX + 'px';
+    dragEl.style.top = correctY + 'px';
+    dragEl.style.width = CELL + 'px';
+    dragEl.style.height = CELL + 'px';
+    dragEl.classList.add('snapped');
+    dragEl.style.zIndex = '1';
+    snapped[id] = true;
+
+    // 진행 표시
+    document.getElementById('dot' + id).classList.add('filled');
+
+    // 완성 체크
+    if (snapped.every(Boolean)) {
+      onComplete();
+    }
+  } else {
+    dragEl.style.zIndex = '5';
+  }
+
+  dragEl = null;
+  document.removeEventListener('mousemove', onDragMove);
+  document.removeEventListener('mouseup', onDragEnd);
+  document.removeEventListener('touchmove', onDragMove);
+  document.removeEventListener('touchend', onDragEnd);
+}
+
+/* ---- 완성 ---- */
+function onComplete() {
+  document.getElementById('hint').style.opacity = '0';
+
+  // 잠시 뒤 완성 사진을 보여주고 → 입장
+  setTimeout(() => {
+    completeOverlay.classList.add('show');
+  }, 400);
+
+  setTimeout(() => {
+    puzzleScreen.classList.add('done');
+    completeOverlay.classList.remove('show');
+  }, 1600);
+
+  setTimeout(() => {
+    weddingScreen.classList.add('show');
+  }, 2000);
+}
+
+/* ---- 시작 ---- */
+createPieces();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,643 @@
+/* ===== Global ===== */
+.mk-wrapper {
+  max-width: 500px;
+  margin: 0 auto;
+  background: #fff;
+  font-family: 'Gowun Dodum', serif;
+  color: #1a2744;
+  overflow-x: hidden;
+}
+
+/* ===== Section 1: Hero ===== */
+.mk-hero {
+  position: relative;
+  width: 100%;
+  /* 390:844 비율 유지 */
+  aspect-ratio: 390 / 844;
+  overflow: hidden;
+}
+
+.mk-hero-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.mk-hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.mk-hero-letter {
+  position: absolute;
+  z-index: 1;
+  /* 390x844 기준 x:25 y:509 */
+  left: 6.41%;    /* 25 / 390 */
+  top: 60.31%;    /* 509 / 844 */
+  width: 61.28%;  /* 239 / 390 */
+  height: auto;
+  pointer-events: none;
+}
+
+/* ===== Section 2: Wedding Photo ===== */
+.mk-photo {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  /* 섹션1 뒤로 335px(390x844기준) 겹침 — 상단 그라데이션 오버랩 */
+  margin-top: -38%;  /* -335 / 390 — %는 부모 너비 기준, 히어로 aspect-ratio와 동일 기준으로 비례 */
+  z-index: 2;
+}
+
+.mk-photo-img {
+  width: 100%;
+  display: block;
+}
+
+.mk-photo-wedding {
+  position: absolute;
+  bottom: clamp(12px, 4vw, 28px);
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+/* ===== Section 3: Calendar ===== */
+.mk-calendar {
+  background: #3B4871;
+  color: #fff;
+  font-family: 'Chiron Sung HK', serif;
+  padding: 60px 30px;
+  text-align: center;
+}
+
+.mk-cal-date {
+  font-size: clamp(28px, 7.0vw, 38px);
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0px;
+}
+
+.mk-cal-time {
+  font-size: clamp(16px, 4.0vw, 20px);
+  font-weight: 500;
+  margin: -4px 0 0;
+}
+
+.mk-cal-venue {
+  font-size: clamp(14px, 4vw, 17px);
+  font-weight: 300;
+  margin: 25px 0;
+}
+
+.mk-cal-grid {
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+.mk-cal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Chiron Sung HK', serif;
+}
+
+.mk-cal-table thead tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.mk-cal-table th {
+  padding: 10px 0;
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  width: calc(100% / 7);
+}
+
+.mk-cal-table td {
+  padding: 15px 0;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  line-height: 1;
+}
+
+.mk-cal-table td.wedding-day {
+  color: #fff;
+  font-weight: 600;
+}
+
+.day-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  color: #3B4871;
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+/* D-Day divider & row */
+.mk-cal-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.4);
+  margin:7px 0;
+}
+
+.mk-dday {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  max-width: 340px;
+  margin: 0 auto;
+  font-family: 'Chiron Sung HK', serif;
+}
+
+.mk-dday-label {
+  font-size: 23px;
+  font-weight: 500;
+}
+
+.mk-dday-value {
+  font-size: 35px;
+  font-weight: 600;
+}
+
+.mk-dday-unit {
+  font-size: 17px;
+  font-weight: 400;
+  margin-left: 2px
+}
+
+/* ===== Section 4: Invitation + Gallery ===== */
+.mk-invite {
+  position: relative;
+  margin-top: -1px;
+  background-image: url('/images/main/background2.webp');
+  background-size: 100% auto;
+  background-position: top center;
+  background-repeat: no-repeat;
+}
+
+.mk-invite-inner {
+  position: relative;
+  padding: 48px 30px;
+  text-align: center;
+}
+
+.mk-invite-title {
+  font-family: 'Chiron Sung HK', serif;
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 400;
+  margin: 0 0 32px;
+  color: #fff;
+}
+
+.mk-invite-text {
+  font-family: 'Gowun Dodum', serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 2.2;
+  color: #fff;
+  margin-bottom: 32px;
+}
+
+.mk-invite-text p {
+  margin: 0;
+}
+
+.mk-invite-couple {
+  margin-bottom: 35px;
+}
+
+.mk-couple-heart {
+  margin: 16px 0;
+  font-size: 16px;
+  color: #fff;
+}
+
+.mk-invite-couple .mk-parents {
+  margin: 40px 0 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: #3B4871;
+}
+
+.mk-invite-couple .mk-couple-name {
+  margin: 20px 0 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #3B4871;
+}
+
+.mk-heart-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #3B4871;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  width: 170px;
+  height: 40px;
+  padding: 0;
+  font-family: 'Gowun Dodum', serif;
+  font-size: 15px;
+  cursor: pointer;
+  margin-bottom: 12px;
+  backdrop-filter: blur(4px);
+}
+
+/* Account Modal */
+.mk-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.mk-modal {
+  background: #F4FBFF;
+  border-radius: 10px;
+  padding: 28px 20px;
+  width: 100%;
+  max-width: 360px;
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.mk-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+}
+
+.mk-modal-title {
+  font-family: 'Gowun Dodum', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #1a2744;
+  text-align: center;
+  margin: 0 0 4px;
+}
+
+.mk-modal-sub {
+  font-size: 12px;
+  color: #888;
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+.mk-modal-tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 30px;
+}
+
+.mk-modal-tabs button {
+  flex: 1;
+  padding: 10px 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: 'Gowun Dodum', serif;
+  font-size: 14px;
+  color: #999;
+  cursor: pointer;
+}
+
+.mk-modal-tabs button.active {
+  color: #1a2744;
+  border-bottom-color: #1a2744;
+  font-weight: 600;
+}
+
+.mk-modal-accounts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mk-modal-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  margin-bottom: 12px;
+}
+
+.mk-modal-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.mk-modal-card-name {
+  font-size: 15px;
+  color: #1a2744;
+}
+
+.mk-modal-card-relation {
+  font-size: 13px;
+  color: #3B4871;
+}
+
+.mk-modal-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mk-modal-card-bank {
+  font-size: 13px;
+  color: #3B4871;;
+}
+
+.mk-modal-card-account {
+  font-size: 13px;
+  color: #3B4871;;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mk-copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px;
+  color: #888;
+}
+
+/* Gallery inside invitation section */
+.mk-gallery-title {
+  font-family: 'Chiron Sung HK', serif;
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 400;
+  margin: 36px 0 20px;
+  color: #fff;
+}
+
+.mk-gallery-top {
+  width: 94.87%;  /* 370/390 */
+  aspect-ratio: 1;
+  margin: 0 auto 8px;
+  border-radius: 200px 200px 5px 5px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.mk-gallery-top img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mk-gallery-grid {
+  width: 94.87%;  /* 370/390 — top과 동일 */
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.mk-gallery-item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.mk-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.mk-gallery-item:active img {
+  transform: scale(1.05);
+}
+
+/* ===== Lightbox ===== */
+.mk-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mk-lb-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 32px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.mk-lb-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  font-size: 28px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.mk-lb-prev { left: 8px; }
+.mk-lb-next { right: 8px; }
+
+.mk-lb-content {
+  max-width: 90vw;
+  max-height: 85vh;
+  text-align: center;
+}
+
+.mk-lb-content img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.mk-lb-counter {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+/* ===== Section 5: Location ===== */
+.mk-location {
+  padding: clamp(36px, 10vw, 56px) clamp(16px, 5vw, 24px);
+  background: #fff;
+}
+
+.mk-loc-title {
+  text-align: center;
+  font-size: clamp(14px, 3.8vw, 16px);
+  margin: 0 0 clamp(20px, 6vw, 32px);
+  color: #333;
+}
+
+.mk-loc-en {
+  font-family: 'Chiron Sung HK', serif;
+  font-style: italic;
+  font-weight: 400;
+  margin-right: 6px;
+}
+
+.mk-loc-map {
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.mk-loc-map iframe {
+  display: block;
+}
+
+.mk-loc-nav-btns {
+  display: flex;
+  gap: 8px;
+  margin-bottom: clamp(24px, 7vw, 36px);
+}
+
+.mk-loc-nav-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 0;
+  text-decoration: none;
+  font-family: 'Gowun Dodum', serif;
+  font-size: 12px;
+  color: #333;
+  background: #fff;
+  /* border: 1px solid #ddd; */
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.1);
+}
+
+.mk-loc-nav-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.mk-loc-details {
+  font-size: clamp(12px, 3.2vw, 14px);
+  line-height: 1.8;
+}
+
+.mk-loc-block {
+  margin-bottom: clamp(16px, 4vw, 24px);
+}
+
+.mk-loc-block h4 {
+  font-size: clamp(13px, 3.5vw, 15px);
+  font-weight: 600;
+  color: #1a2744;
+  margin: 0 0 4px;
+}
+
+.mk-loc-block p {
+  margin: 2px 0;
+  color: #444;
+}
+
+.mk-text-blue {
+  color: #366FC9 !important;
+}
+
+.mk-loc-sub {
+  color: #888 !important;
+  font-size: clamp(11px, 2.8vw, 13px) !important;
+}
+
+/* ===== Section 6: Notice ===== */
+.mk-notice {
+  padding: 36px 24px;
+}
+
+.mk-notice-title {
+  font-size: clamp(14px, 3.8vw, 16px);
+  color: #333;
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+.mk-notice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mk-notice-item {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.mk-notice-item h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a2744;
+  margin: 0 0 4px;
+}
+
+.mk-notice-item p {
+  font-size: 13px;
+  color: #555;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ===== Footer ===== */
+.mk-footer {
+  background: #fff;
+}
+
+.mk-footer-img {
+  width: 100%;
+  display: block;
+}
+
+/* ===== Responsive: larger screens ===== */
+@media (min-width: 501px) {
+  .mk-wrapper {
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+  }
+}

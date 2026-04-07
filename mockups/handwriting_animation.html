@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>본명조 손글씨 애니메이션</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.4/dist/opentype.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #1a1a2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  height: 100vh;
+  min-height: 700px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,0.05) 0%,
+    rgba(0,0,0,0.12) 40%,
+    rgba(0,0,0,0.12) 60%,
+    rgba(0,0,0,0.05) 100%
+  );
+}
+
+.svg-layer {
+  position: relative;
+  z-index: 2;
+  width: 88%;
+  max-width: 380px;
+}
+
+/* 로딩 상태 */
+.loading {
+  position: absolute;
+  z-index: 5;
+  color: rgba(255,255,255,0.5);
+  font-family: 'Noto Serif KR', serif;
+  font-size: 13px;
+  letter-spacing: 3px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading.hidden { display: none; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* 다시보기 */
+.replay-btn {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  padding: 12px 32px;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 28px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
+  color: rgba(255,255,255,0.7);
+  font-family: 'Noto Serif KR', serif;
+  font-size: 12px;
+  cursor: pointer;
+  letter-spacing: 3px;
+  transition: all 0.3s;
+  opacity: 0;
+  animation: fadeUp 0.6s ease forwards 3.4s;
+}
+
+.replay-btn:hover {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border-color: rgba(255,255,255,0.5);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <img src="images/main/background.png" alt="배경" class="hero-bg">
+  <div class="hero-overlay"></div>
+  <div class="loading" id="loader">불러오는 중...</div>
+  <svg id="text-svg" class="svg-layer" viewBox="0 0 380 260"></svg>
+  <button class="replay-btn" id="replayBtn" onclick="replay()">다시 보기</button>
+</div>
+
+<script>
+const SVG_W = 380;
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+const WORDS = [
+  {
+    text: 'Sangseon',
+    y: 78,
+    size: 50,
+    strokeColor: '#ffffff',
+    fillColor: '#ffffff',
+    strokeW: 1.3,
+    charDelay: 0.14,
+    startDelay: 0.3,
+  },
+  {
+    text: 'and',
+    y: 144,
+    size: 28,
+    strokeColor: 'rgba(255,255,255,0.65)',
+    fillColor: 'rgba(255,255,255,0.6)',
+    strokeW: 0.9,
+    charDelay: 0.14,
+    startDelay: 1.55,
+  },
+  {
+    text: 'Seulgi',
+    y: 222,
+    size: 50,
+    strokeColor: '#ffffff',
+    fillColor: '#ffffff',
+    strokeW: 1.3,
+    charDelay: 0.14,
+    startDelay: 2.1,
+  },
+];
+
+let loadedFont = null;
+
+/* ---- 폰트 로드 ---- */
+async function loadFont() {
+  const urls = [
+    'https://cdn.jsdelivr.net/fontsource/fonts/noto-serif-kr@latest/latin-300-normal.woff',
+    'https://unpkg.com/@fontsource/noto-serif-kr@5.0.18/files/noto-serif-kr-latin-300-normal.woff',
+  ];
+
+  for (const url of urls) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const buf = await res.arrayBuffer();
+      return opentype.parse(buf);
+    } catch (e) {
+      console.warn('Font load failed:', url);
+    }
+  }
+  throw new Error('본명조 폰트를 불러올 수 없습니다');
+}
+
+/* ---- SVG 생성 ---- */
+function buildSVG(svg, font) {
+  svg.innerHTML = '';
+
+  // keyframes
+  const style = document.createElementNS(SVG_NS, 'style');
+  style.textContent = `
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes fillIn { from { opacity: 0; } to { opacity: 1; } }
+  `;
+  svg.appendChild(style);
+
+  WORDS.forEach((word) => {
+    const totalAdvance = font.getAdvanceWidth(word.text, word.size);
+    let curX = (SVG_W - totalAdvance) / 2;
+
+    const charEls = [];
+
+    // --- 각 글자를 path로 변환 & stroke 애니메이션 ---
+    for (let i = 0; i < word.text.length; i++) {
+      const ch = word.text[i];
+      const glyph = font.charToGlyph(ch);
+      const path = glyph.getPath(curX, word.y, word.size);
+      const d = path.toPathData(2);
+
+      if (d && d.length > 1) {
+        const el = document.createElementNS(SVG_NS, 'path');
+        el.setAttribute('d', d);
+        el.setAttribute('fill', 'none');
+        el.setAttribute('stroke', word.strokeColor);
+        el.setAttribute('stroke-width', String(word.strokeW));
+        el.setAttribute('stroke-linecap', 'round');
+        el.setAttribute('stroke-linejoin', 'round');
+        svg.appendChild(el);
+
+        const len = el.getTotalLength();
+        el.style.strokeDasharray = String(len);
+        el.style.strokeDashoffset = String(len);
+
+        const delay = word.startDelay + i * word.charDelay;
+        const dur = Math.max(word.charDelay + 0.08, 0.2);
+        el.style.animation = `draw ${dur.toFixed(2)}s cubic-bezier(.4,.0,.2,1) forwards ${delay.toFixed(2)}s`;
+
+        charEls.push(el);
+      }
+
+      curX += glyph.advanceWidth * (word.size / font.unitsPerEm);
+    }
+
+    // --- fill 텍스트 (stroke 완료 후 페이드인) ---
+    const lastCharDelay = word.startDelay + (word.text.length - 1) * word.charDelay;
+    const fillStart = lastCharDelay + 0.15;
+
+    const fillText = document.createElementNS(SVG_NS, 'text');
+    fillText.setAttribute('x', String(SVG_W / 2));
+    fillText.setAttribute('y', String(word.y));
+    fillText.setAttribute('text-anchor', 'middle');
+    fillText.setAttribute('font-family', "'Noto Serif KR', 'Noto Serif', serif");
+    fillText.setAttribute('font-size', String(word.size));
+    fillText.setAttribute('font-weight', '300');
+    fillText.setAttribute('fill', word.fillColor);
+    if (word.text === 'and') {
+      fillText.setAttribute('font-style', 'italic');
+    }
+    fillText.textContent = word.text;
+    fillText.style.opacity = '0';
+    fillText.style.animation = `fillIn 0.7s ease forwards ${fillStart.toFixed(2)}s`;
+    svg.appendChild(fillText);
+
+    // --- stroke를 fill 등장 후 서서히 숨김 ---
+    charEls.forEach((el) => {
+      el.style.transition = 'opacity 0.6s ease';
+      const hideAt = (fillStart + 0.5) * 1000;
+      setTimeout(() => { el.style.opacity = '0.15'; }, hideAt);
+    });
+  });
+}
+
+/* ---- 초기화 ---- */
+async function init() {
+  const loader = document.getElementById('loader');
+  try {
+    loadedFont = await loadFont();
+    loader.classList.add('hidden');
+    const svg = document.getElementById('text-svg');
+    buildSVG(svg, loadedFont);
+  } catch (e) {
+    loader.textContent = '폰트 로드 실패 — 새로고침 해주세요';
+    console.error(e);
+  }
+}
+
+/* ---- 다시보기 ---- */
+function replay() {
+  if (!loadedFont) return;
+  // 버튼 리셋
+  const btn = document.getElementById('replayBtn');
+  btn.style.animation = 'none';
+  btn.style.opacity = '0';
+  void btn.offsetWidth;
+  btn.style.animation = 'fadeUp 0.6s ease forwards 3.4s';
+
+  const svg = document.getElementById('text-svg');
+  buildSVG(svg, loadedFont);
+}
+
+init();
+</script>
+
+</body>
+</html>

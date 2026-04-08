@@ -382,7 +382,7 @@ function WeddingCard() {
 
       {/* ===== Footer ===== */}
       <section className="mk-footer">
-        <img src="/images/footer/footer.webp" alt="" className="mk-footer-img" loading="lazy" />
+        <img src="/images/footer/footer.webp" alt="" className="mk-footer-img" />
       </section>
     </div>
   )

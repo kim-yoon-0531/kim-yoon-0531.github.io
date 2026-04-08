@@ -144,31 +144,79 @@ function WeddingCard() {
   useEffect(() => {
     if (selectedIndex === null) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') setSelectedIndex((selectedIndex - 1 + total) % total)
-      else if (e.key === 'ArrowRight') setSelectedIndex((selectedIndex + 1) % total)
+      if (e.key === 'ArrowLeft') { resetZoom(); setSelectedIndex((selectedIndex - 1 + total) % total) }
+      else if (e.key === 'ArrowRight') { resetZoom(); setSelectedIndex((selectedIndex + 1) % total) }
       else if (e.key === 'Escape') closeModal()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [selectedIndex])
 
-  // 터치 스와이프 (핀치 줌 시 스와이프 방지)
-  const touchStart = useRef(0)
+  // 핀치 줌 + 스와이프
+  const imgScale = useRef(1)
+  const imgPos = useRef({ x: 0, y: 0 })
+  const pinchStartDist = useRef(0)
+  const pinchStartScale = useRef(1)
+  const touchStartX = useRef(0)
+  const touchStartY = useRef(0)
+  const lastPos = useRef({ x: 0, y: 0 })
   const wasPinch = useRef(false)
+  const imgRef = useRef<HTMLImageElement>(null)
+
+  const getDist = (t: React.TouchList) => {
+    const dx = t[0].clientX - t[1].clientX
+    const dy = t[0].clientY - t[1].clientY
+    return Math.sqrt(dx * dx + dy * dy)
+  }
+
+  const applyTransform = () => {
+    if (!imgRef.current) return
+    const s = imgScale.current
+    const { x, y } = imgPos.current
+    imgRef.current.style.transform = `translate(${x}px, ${y}px) scale(${s})`
+  }
+
+  const resetZoom = () => {
+    imgScale.current = 1
+    imgPos.current = { x: 0, y: 0 }
+    if (imgRef.current) imgRef.current.style.transform = ''
+  }
+
   const handleTouchStart = (e: React.TouchEvent) => {
-    wasPinch.current = e.touches.length >= 2
-    if (e.touches.length === 1) touchStart.current = e.touches[0].clientX
+    if (e.touches.length === 2) {
+      wasPinch.current = true
+      pinchStartDist.current = getDist(e.touches)
+      pinchStartScale.current = imgScale.current
+    } else if (e.touches.length === 1) {
+      touchStartX.current = e.touches[0].clientX
+      touchStartY.current = e.touches[0].clientY
+      lastPos.current = { ...imgPos.current }
+    }
   }
+
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length >= 2) wasPinch.current = true
+    if (e.touches.length === 2) {
+      wasPinch.current = true
+      const dist = getDist(e.touches)
+      const newScale = Math.min(3, Math.max(1, pinchStartScale.current * (dist / pinchStartDist.current)))
+      imgScale.current = newScale
+      if (newScale === 1) imgPos.current = { x: 0, y: 0 }
+      applyTransform()
+    } else if (e.touches.length === 1 && imgScale.current > 1) {
+      const dx = e.touches[0].clientX - touchStartX.current
+      const dy = e.touches[0].clientY - touchStartY.current
+      imgPos.current = { x: lastPos.current.x + dx, y: lastPos.current.y + dy }
+      applyTransform()
+    }
   }
+
   const handleTouchEnd = (e: React.TouchEvent) => {
-    // 손가락이 아직 남아있으면 무시
     if (e.touches.length > 0) return
-    // 핀치였으면 모든 손가락이 떨어진 후 리셋만
     if (wasPinch.current) { wasPinch.current = false; return }
-    const diff = touchStart.current - e.changedTouches[0].clientX
+    if (imgScale.current > 1) return // 확대 중이면 스와이프 무시
+    const diff = touchStartX.current - e.changedTouches[0].clientX
     if (Math.abs(diff) > 50) {
+      resetZoom()
       if (diff > 0) setSelectedIndex(prev => prev !== null ? (prev + 1) % total : null)
       else setSelectedIndex(prev => prev !== null ? (prev - 1 + total) % total : null)
     }
@@ -181,25 +229,15 @@ function WeddingCard() {
     })
   }
 
-  const setViewportZoom = (allow: boolean) => {
-    const meta = document.querySelector('meta[name="viewport"]')
-    if (meta) {
-      meta.setAttribute('content', allow
-        ? 'width=device-width, initial-scale=1.0'
-        : 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
-      )
-    }
-  }
-
   const openModal = (index: number) => {
     setSelectedIndex(index)
     document.body.style.overflow = 'hidden'
-    setViewportZoom(true)
+    resetZoom()
   }
   const closeModal = () => {
     setSelectedIndex(null)
     document.body.style.overflow = ''
-    setViewportZoom(false)
+    resetZoom()
   }
 
   return (
@@ -329,10 +367,10 @@ function WeddingCard() {
       {selectedIndex !== null && (
         <div className="mk-lightbox" onClick={closeModal} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
           <button className="mk-lb-close" onClick={closeModal}>×</button>
-          <button className="mk-lb-nav mk-lb-prev" onClick={e => { e.stopPropagation(); setSelectedIndex((selectedIndex - 1 + total) % total) }}>‹</button>
-          <button className="mk-lb-nav mk-lb-next" onClick={e => { e.stopPropagation(); setSelectedIndex((selectedIndex + 1) % total) }}>›</button>
+          <button className="mk-lb-nav mk-lb-prev" onClick={e => { e.stopPropagation(); resetZoom(); setSelectedIndex((selectedIndex - 1 + total) % total) }}>‹</button>
+          <button className="mk-lb-nav mk-lb-next" onClick={e => { e.stopPropagation(); resetZoom(); setSelectedIndex((selectedIndex + 1) % total) }}>›</button>
           <div className="mk-lb-content" onClick={e => e.stopPropagation()}>
-            <img src={`/images/gallery/${allImages[selectedIndex]}.webp`} alt="" />
+            <img ref={imgRef} src={`/images/gallery/${allImages[selectedIndex]}.webp`} alt="" style={{ touchAction: 'none' }} />
             <div className="mk-lb-counter">{selectedIndex + 1} / {total}</div>
           </div>
         </div>

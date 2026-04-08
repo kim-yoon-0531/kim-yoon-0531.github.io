@@ -152,10 +152,18 @@ function WeddingCard() {
     return () => window.removeEventListener('keydown', onKey)
   }, [selectedIndex])
 
-  // 터치 스와이프
+  // 터치 스와이프 (핀치 줌 시 스와이프 방지)
   const touchStart = useRef(0)
-  const handleTouchStart = (e: React.TouchEvent) => { touchStart.current = e.touches[0].clientX }
+  const wasPinch = useRef(false)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    wasPinch.current = e.touches.length >= 2
+    if (e.touches.length === 1) touchStart.current = e.touches[0].clientX
+  }
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length >= 2) wasPinch.current = true
+  }
   const handleTouchEnd = (e: React.TouchEvent) => {
+    if (wasPinch.current) { wasPinch.current = false; return }
     const diff = touchStart.current - e.changedTouches[0].clientX
     if (Math.abs(diff) > 50) {
       if (diff > 0) setSelectedIndex(prev => prev !== null ? (prev + 1) % total : null)
@@ -316,7 +324,7 @@ function WeddingCard() {
 
       {/* ===== Gallery Lightbox ===== */}
       {selectedIndex !== null && (
-        <div className="mk-lightbox" onClick={closeModal} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+        <div className="mk-lightbox" onClick={closeModal} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
           <button className="mk-lb-close" onClick={closeModal}>×</button>
           <button className="mk-lb-nav mk-lb-prev" onClick={e => { e.stopPropagation(); setSelectedIndex((selectedIndex - 1 + total) % total) }}>‹</button>
           <button className="mk-lb-nav mk-lb-next" onClick={e => { e.stopPropagation(); setSelectedIndex((selectedIndex + 1) % total) }}>›</button>

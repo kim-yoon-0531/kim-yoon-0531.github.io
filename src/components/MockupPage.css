@@ -12,21 +12,13 @@
 .mk-hero {
   position: relative;
   width: 100%;
-  /* 390:844 비율 유지 */
-  aspect-ratio: 390 / 844;
   overflow: hidden;
-}
-
-.mk-hero-bg {
-  position: absolute;
-  inset: 0;
 }
 
 .mk-hero-bg img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
+  height: auto;
+  display: block;
 }
 
 .mk-hero-letter {
@@ -34,7 +26,7 @@
   z-index: 1;
   /* 390x844 기준 x:25 y:509 */
   left: 6.41%;    /* 25 / 390 */
-  top: 60.31%;    /* 509 / 844 */
+  top: 35%;
   width: 61.28%;  /* 239 / 390 */
   height: auto;
   pointer-events: none;
@@ -46,7 +38,7 @@
   width: 100%;
   overflow: hidden;
   /* 섹션1 뒤로 335px(390x844기준) 겹침 — 상단 그라데이션 오버랩 */
-  margin-top: -38%;  /* -335 / 390 — %는 부모 너비 기준, 히어로 aspect-ratio와 동일 기준으로 비례 */
+  margin-top: -135%;  /* -335 / 390 — %는 부모 너비 기준, 히어로 aspect-ratio와 동일 기준으로 비례 */
   z-index: 2;
 }
 
@@ -633,6 +625,18 @@
 .mk-footer-img {
   width: 100%;
   display: block;
+}
+
+/* ===== Scroll Reveal ===== */
+.mk-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.mk-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ===== Responsive: larger screens ===== */

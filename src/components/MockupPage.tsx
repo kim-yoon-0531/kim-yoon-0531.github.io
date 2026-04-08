@@ -10,6 +10,16 @@ function MockupPage() {
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null)
 
   useEffect(() => {
+    const els = document.querySelectorAll('.mk-reveal')
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target) } }),
+      { threshold: 0.15 }
+    )
+    els.forEach(el => observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
     const calcDDay = () => {
       const wedding = new Date(2026, 4, 31)
       const now = new Date()
@@ -93,7 +103,7 @@ function MockupPage() {
       {/* ===== Section 1: Hero ===== */}
       <section className="mk-hero">
         <div className="mk-hero-bg">
-          <img src="/images/main/background.webp" alt="" />
+          <img src="/images/main/background2.webp" alt="" />
         </div>
         <img src="/images/main/letter.png" alt="Sangseon and Seulgi 결혼합니다" className="mk-hero-letter" />
       </section>
@@ -106,22 +116,24 @@ function MockupPage() {
 
       {/* ===== Section 3: Calendar ===== */}
       <section className="mk-calendar">
-        <p className="mk-cal-date">2026. 05. 31</p>
-        <p className="mk-cal-time">12: 20 PM</p>
-        <p className="mk-cal-venue">월드컵 컨벤션 2층 임페리얼 볼룸홀</p>
-        <div className="mk-cal-grid">
-          {renderCalendar()}
-        </div>
-        <div className="mk-cal-divider" />
-        <div className="mk-dday">
-          <span className="mk-dday-label">D-day</span>
-          <span className="mk-dday-value">{dDay}<span className="mk-dday-unit">days</span></span>
+        <div className="mk-reveal">
+          <p className="mk-cal-date">2026. 05. 31</p>
+          <p className="mk-cal-time">12: 20 PM</p>
+          <p className="mk-cal-venue">월드컵 컨벤션 2층 임페리얼 볼룸홀</p>
+          <div className="mk-cal-grid">
+            {renderCalendar()}
+          </div>
+          <div className="mk-cal-divider" />
+          <div className="mk-dday">
+            <span className="mk-dday-label">D-day</span>
+            <span className="mk-dday-value">{dDay}<span className="mk-dday-unit">days</span></span>
+          </div>
         </div>
       </section>
 
       {/* ===== Section 4: Invitation + Gallery ===== */}
       <section className="mk-invite">
-        <div className="mk-invite-inner">
+        <div className="mk-invite-inner mk-reveal">
           <p className="mk-invite-title">Invitation</p>
           <div className="mk-invite-text">
             <p>상상만 해도 미소가 지어지는</p>
@@ -190,7 +202,7 @@ function MockupPage() {
 
           {/* Top feature photo - 반타원 */}
           <div className="mk-gallery-top" onClick={() => openModal(0)}>
-            <img src="/images/gallery/top.webp" alt="갤러리 대표" />
+            <img src="/images/gallery/top.webp" alt="갤러리 대표" loading="lazy" />
           </div>
 
           {/* 4x5 grid */}
@@ -223,9 +235,9 @@ function MockupPage() {
 
       {/* ===== Section 5: Location ===== */}
       <section className="mk-location">
-        <p className="mk-loc-title"><span className="mk-loc-en">Location</span> 오시는길</p>
+        <p className="mk-loc-title mk-reveal"><span className="mk-loc-en">Location</span> 오시는길</p>
 
-        <div className="mk-loc-map">
+        <div className="mk-loc-map mk-reveal">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3162.7!2d126.8971!3d37.5683!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357c98dc75ebe10d%3A0x5f92c0d333099c6c!2z7ISc7Jq4IOyblOuTnOy7tOqyvOq4sOyepQ!5e0!3m2!1sko!2skr!4v1"
             width="100%"
@@ -238,7 +250,7 @@ function MockupPage() {
           />
         </div>
 
-        <div className="mk-loc-nav-btns">
+        <div className="mk-loc-nav-btns mk-reveal">
           {weddingData.maps && Object.entries(weddingData.maps).map(([key, map]) => (
             <a key={key} href={map.link} target="_blank" rel="noopener noreferrer" className="mk-loc-nav-btn">
               <img src={map.icon} alt={key} className="mk-loc-nav-icon" />
@@ -247,7 +259,7 @@ function MockupPage() {
           ))}
         </div>
 
-        <div className="mk-loc-details">
+        <div className="mk-loc-details mk-reveal">
           <div className="mk-loc-block">
             <h4>버스</h4>
             <p className="mk-text-blue">월드컵경기장 서측 문화비축기지 정류장 하차 도보 3분</p>
@@ -273,8 +285,8 @@ function MockupPage() {
 
       {/* ===== Section 6: Notice ===== */}
       <section className="mk-notice">
-        <p className="mk-notice-title"><span className="mk-loc-en">Notice</span> 공지사항</p>
-        <div className="mk-notice-list">
+        <p className="mk-notice-title mk-reveal"><span className="mk-loc-en">Notice</span> 공지사항</p>
+        <div className="mk-notice-list mk-reveal">
           <div className="mk-notice-item">
             <h4>식사안내</h4>
             <p>결혼 시작 30분전 연회장 오픈됩니다.</p>
@@ -298,7 +310,7 @@ function MockupPage() {
 
       {/* ===== Footer ===== */}
       <section className="mk-footer">
-        <img src="/images/footer/footer.webp" alt="" className="mk-footer-img" />
+        <img src="/images/footer/footer.webp" alt="" className="mk-footer-img" loading="lazy" />
       </section>
     </div>
   )

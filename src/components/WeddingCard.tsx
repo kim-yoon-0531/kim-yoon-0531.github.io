@@ -211,6 +211,13 @@ function WeddingCard() {
   }
 
   const handleTouchEnd = (e: React.TouchEvent) => {
+    // 핀치 후 손가락 하나 남으면 기준점 갱신
+    if (e.touches.length === 1) {
+      touchStartX.current = e.touches[0].clientX
+      touchStartY.current = e.touches[0].clientY
+      lastPos.current = { ...imgPos.current }
+      return
+    }
     if (e.touches.length > 0) return
     if (wasPinch.current) { wasPinch.current = false; return }
     if (imgScale.current > 1) return // 확대 중이면 스와이프 무시

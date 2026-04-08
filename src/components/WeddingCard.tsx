@@ -163,6 +163,9 @@ function WeddingCard() {
     if (e.touches.length >= 2) wasPinch.current = true
   }
   const handleTouchEnd = (e: React.TouchEvent) => {
+    // 손가락이 아직 남아있으면 무시
+    if (e.touches.length > 0) return
+    // 핀치였으면 모든 손가락이 떨어진 후 리셋만
     if (wasPinch.current) { wasPinch.current = false; return }
     const diff = touchStart.current - e.changedTouches[0].clientX
     if (Math.abs(diff) > 50) {

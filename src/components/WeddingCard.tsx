@@ -137,6 +137,32 @@ function WeddingCard() {
     )
   }
 
+  const allImages = ['top','01','02','016','03','04','05','06','07','08','09','010','011','012','013','014','015','017','018','019','020','021','022','023','024']
+  const total = allImages.length
+
+  // 키보드 좌우키
+  useEffect(() => {
+    if (selectedIndex === null) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') setSelectedIndex((selectedIndex - 1 + total) % total)
+      else if (e.key === 'ArrowRight') setSelectedIndex((selectedIndex + 1) % total)
+      else if (e.key === 'Escape') closeModal()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [selectedIndex])
+
+  // 터치 스와이프
+  const touchStart = useRef(0)
+  const handleTouchStart = (e: React.TouchEvent) => { touchStart.current = e.touches[0].clientX }
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const diff = touchStart.current - e.changedTouches[0].clientX
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) setSelectedIndex(prev => prev !== null ? (prev + 1) % total : null)
+      else setSelectedIndex(prev => prev !== null ? (prev - 1 + total) % total : null)
+    }
+  }
+
   const copyAccount = (account: string, key: string) => {
     navigator.clipboard.writeText(account).then(() => {
       setCopiedIndex(key)
@@ -289,21 +315,17 @@ function WeddingCard() {
       )}
 
       {/* ===== Gallery Lightbox ===== */}
-      {selectedIndex !== null && (() => {
-        const allImages = ['top','01','02','016','03','04','05','06','07','08','09','010','011','012','013','014','015','017','018','019','020','021','022','023','024']
-        const total = allImages.length
-        return (
-          <div className="mk-lightbox" onClick={closeModal}>
-            <button className="mk-lb-close" onClick={closeModal}>×</button>
-            <button className="mk-lb-nav mk-lb-prev" onClick={e => { e.stopPropagation(); setSelectedIndex((selectedIndex - 1 + total) % total) }}>‹</button>
-            <button className="mk-lb-nav mk-lb-next" onClick={e => { e.stopPropagation(); setSelectedIndex((selectedIndex + 1) % total) }}>›</button>
-            <div className="mk-lb-content" onClick={e => e.stopPropagation()}>
-              <img src={`/images/gallery/${allImages[selectedIndex]}.webp`} alt="" />
-              <div className="mk-lb-counter">{selectedIndex + 1} / {total}</div>
-            </div>
+      {selectedIndex !== null && (
+        <div className="mk-lightbox" onClick={closeModal} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+          <button className="mk-lb-close" onClick={closeModal}>×</button>
+          <button className="mk-lb-nav mk-lb-prev" onClick={e => { e.stopPropagation(); setSelectedIndex((selectedIndex - 1 + total) % total) }}>‹</button>
+          <button className="mk-lb-nav mk-lb-next" onClick={e => { e.stopPropagation(); setSelectedIndex((selectedIndex + 1) % total) }}>›</button>
+          <div className="mk-lb-content" onClick={e => e.stopPropagation()}>
+            <img src={`/images/gallery/${allImages[selectedIndex]}.webp`} alt="" />
+            <div className="mk-lb-counter">{selectedIndex + 1} / {total}</div>
           </div>
-        )
-      })()}
+        </div>
+      )}
 
       {/* ===== Section 5: Location ===== */}
       <section className="mk-location">

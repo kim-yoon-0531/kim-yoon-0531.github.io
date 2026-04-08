@@ -57,6 +57,7 @@
   font-weight: 500;
   color: #fff;
   margin: 0;
+  left: 5px;
   z-index: 2;
   pointer-events: none;
   transform: rotate(-10deg);

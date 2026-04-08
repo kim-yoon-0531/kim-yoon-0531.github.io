@@ -66,13 +66,25 @@ function MockupPage() {
     })
   }
 
+  const setViewportZoom = (allow: boolean) => {
+    const meta = document.querySelector('meta[name="viewport"]')
+    if (meta) {
+      meta.setAttribute('content', allow
+        ? 'width=device-width, initial-scale=1.0'
+        : 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+      )
+    }
+  }
+
   const openModal = (index: number) => {
     setSelectedIndex(index)
     document.body.style.overflow = 'hidden'
+    setViewportZoom(true)
   }
   const closeModal = () => {
     setSelectedIndex(null)
     document.body.style.overflow = ''
+    setViewportZoom(false)
   }
 
   return (
@@ -115,11 +127,11 @@ function MockupPage() {
             <p>상상만 해도 미소가 지어지는</p>
             <p>선물 같은 사람을 만나</p>
             <p>슬플 때나 기쁠 때나 함께하며</p>
-            <p>기쁘게 같은 길을 걸어가려 합니다.</p>
+            <p>기꺼이 같은 길을 걸어가려 합니다.</p>
             <br />
-            <p>작은 공동체로 시작한 인연이</p>
-            <p>서로의 하루를 빛나는 이야기가 되고</p>
-            <p>둘의 좋은 사랑을 이어가며</p>
+            <p>작은 공통점으로 시작된 인연이</p>
+            <p>서로의 하루를 빛내는 이야기가 되어</p>
+            <p>동화 같은 사랑을 이어가려 합니다.</p>
             <br />
             <p>저희의 첫 장면에 소중한 당신을 초대합니다.</p>
           </div>

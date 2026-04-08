@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { weddingData } from '../data/weddingData'
 import './MockupPage.css'
 
@@ -8,6 +8,72 @@ function MockupPage() {
   const [accountModal, setAccountModal] = useState(false)
   const [accountTab, setAccountTab] = useState<'groom' | 'bride'>('groom')
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null)
+  const sparkleRef = useRef<HTMLCanvasElement>(null)
+
+  // 별가루 Canvas 이펙트
+  useEffect(() => {
+    const canvas = sparkleRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const section = canvas.parentElement!
+    const img = section.querySelector('img')!
+    let animId: number
+    let w = 0, h = 0
+    let stars: { x: number; y: number; r: number; dx: number; dy: number; rt: number; rtMax: number; rtDir: number }[] = []
+
+    const createStar = () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: 1 + Math.random() * 3,
+      dx: (Math.random() - 0.5) * 0.3,
+      dy: (Math.random() - 0.5) * 0.3,
+      rt: 0,
+      rtMax: 0.4 + Math.random() * 0.6,
+      rtDir: 0.005 + Math.random() * 0.01,
+    })
+
+    const setup = () => {
+      const dpr = window.devicePixelRatio || 1
+      w = section.offsetWidth
+      h = section.offsetHeight
+      canvas.width = w * dpr
+      canvas.height = h * dpr
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      const count = Math.floor((w * h) / 15000)
+      stars = Array.from({ length: count }, createStar)
+    }
+
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h)
+      stars.forEach(s => {
+        s.rt += s.rtDir
+        if (s.rt >= s.rtMax || s.rt <= 0) s.rtDir *= -1
+        s.x += s.dx
+        s.y += s.dy
+        if (s.x < 0 || s.x > w) s.dx *= -1
+        if (s.y < 0 || s.y > h) s.dy *= -1
+
+        const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 2)
+        grad.addColorStop(0, `rgba(255, 255, 255, ${s.rt})`)
+        grad.addColorStop(1, 'rgba(255, 255, 255, 0)')
+        ctx.beginPath()
+        ctx.arc(s.x, s.y, s.r * 2, 0, Math.PI * 2)
+        ctx.fillStyle = grad
+        ctx.fill()
+      })
+      animId = requestAnimationFrame(draw)
+    }
+
+    // 이미지 로드 후 시작 (높이 확보)
+    const start = () => { setup(); draw() }
+    if (img.complete) start()
+    else img.onload = start
+
+    window.addEventListener('resize', setup)
+    return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', setup) }
+  }, [])
 
   useEffect(() => {
     const els = document.querySelectorAll('.mk-reveal')
@@ -16,8 +82,10 @@ function MockupPage() {
       { threshold: 0.15 }
     )
     els.forEach(el => observer.observe(el))
+
     return () => observer.disconnect()
   }, [])
+
 
   useEffect(() => {
     const calcDDay = () => {
@@ -105,12 +173,14 @@ function MockupPage() {
         <div className="mk-hero-bg">
           <img src="/images/main/background2.webp" alt="" />
         </div>
-        <img src="/images/main/letter.png" alt="Sangseon and Seulgi 결혼합니다" className="mk-hero-letter" />
+        <img src="/images/main/letter.png" alt="Sangseon and Seulgi 결혼합니다" className="mk-hero-letter mk-reveal" />
       </section>
 
       {/* ===== Section 2: Wedding Photo ===== */}
       <section className="mk-photo">
-        <img src="/images/main/main2.webp" alt="웨딩 사진" className="mk-photo-img" />
+        <img src="/images/main/main3.webp" alt="웨딩 사진" className="mk-photo-img" />
+        <p className="mk-photo-title">Our Wedding</p>
+        <canvas ref={sparkleRef} className="mk-sparkles-canvas" />
       </section>
 
       {/* ===== Section 3: Calendar ===== */}
@@ -134,8 +204,9 @@ function MockupPage() {
       <section className="mk-invite">
         <div className="mk-invite-inner">
           {/* 그룹1: Invitation + 텍스트 */}
+
+          <p className="mk-invite-title mk-reveal">Invitation</p>
           <div className="mk-reveal">
-            <p className="mk-invite-title">Invitation</p>
             <div className="mk-invite-text">
               <p>상상만 해도 미소가 지어지는</p>
               <p>선물 같은 사람을 만나</p>
@@ -148,10 +219,8 @@ function MockupPage() {
               <br />
               <p>저희의 첫 장면에 소중한 당신을 초대합니다.</p>
             </div>
-          </div>
 
           {/* 그룹2: 하트 + 부모/신랑신부 + 마음전달 버튼 */}
-          <div className="mk-reveal">
             <p className="mk-couple-heart">&#9829;</p>
             <div className="mk-invite-couple">
               <p className="mk-parents">{weddingData.couple.groom.parents}의 아들</p>
@@ -165,8 +234,9 @@ function MockupPage() {
           </div>
 
           {/* 그룹3: Gallery 타이틀 + 대표사진 + 그리드 */}
+
+          <p className="mk-gallery-title mk-reveal">Gallery</p>
           <div className="mk-reveal">
-            <p className="mk-gallery-title">Gallery</p>
             <div className="mk-gallery-top" onClick={() => openModal(0)}>
               <img src="/images/gallery/top.webp" alt="갤러리 대표" loading="lazy" />
             </div>

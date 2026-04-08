@@ -110,8 +110,7 @@ function MockupPage() {
 
       {/* ===== Section 2: Wedding Photo ===== */}
       <section className="mk-photo">
-        <img src="/images/main/img.webp" alt="웨딩 사진" className="mk-photo-img" />
-        <img src="/images/main/wedding.png" alt="Wedding" className="mk-photo-wedding" />
+        <img src="/images/main/main2.webp" alt="웨딩 사진" className="mk-photo-img" />
       </section>
 
       {/* ===== Section 3: Calendar ===== */}

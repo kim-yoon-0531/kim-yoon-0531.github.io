@@ -1,11 +1,11 @@
 /* ===== Global ===== */
 .mk-wrapper {
-  max-width: 500px;
+  max-width: 600px;
   margin: 0 auto;
   background: #fff;
   font-family: 'Gowun Dodum', serif;
   color: #1a2744;
-  overflow-x: hidden;
+  overflow: clip;
 }
 
 /* ===== Section 1: Hero ===== */
@@ -47,13 +47,20 @@
   display: block;
 }
 
-.mk-photo-wedding {
+.mk-photo-wedding-svg {
   position: absolute;
-  bottom: clamp(12px, 4vw, 28px);
+  bottom: clamp(8px, 3vw, 24px);
+  left: 0;
   width: 100%;
-  height: auto;
   pointer-events: none;
 }
+
+.mk-photo-wedding-svg svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 
 /* ===== Section 3: Calendar ===== */
 .mk-calendar {

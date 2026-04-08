@@ -132,88 +132,91 @@ function MockupPage() {
 
       {/* ===== Section 4: Invitation + Gallery ===== */}
       <section className="mk-invite">
-        <div className="mk-invite-inner mk-reveal">
-          <p className="mk-invite-title">Invitation</p>
-          <div className="mk-invite-text">
-            <p>상상만 해도 미소가 지어지는</p>
-            <p>선물 같은 사람을 만나</p>
-            <p>슬플 때나 기쁠 때나 함께하며</p>
-            <p>기꺼이 같은 길을 걸어가려 합니다.</p>
-            <br />
-            <p>작은 공통점으로 시작된 인연이</p>
-            <p>서로의 하루를 빛내는 이야기가 되어</p>
-            <p>동화 같은 사랑을 이어가려 합니다.</p>
-            <br />
-            <p>저희의 첫 장면에 소중한 당신을 초대합니다.</p>
-          </div>
-
-          <p className="mk-couple-heart">&#9829;</p>
-          <div className="mk-invite-couple">
-            <p className="mk-parents">{weddingData.couple.groom.parents}의 아들</p>
-            <p className="mk-couple-name">{weddingData.couple.groom.name}</p>
-            <p className="mk-parents">{weddingData.couple.bride.parents}의 딸</p>
-            <p className="mk-couple-name">{weddingData.couple.bride.name}</p>
-          </div>
-
-          <button className="mk-heart-btn" onClick={() => { setAccountModal(true); document.body.style.overflow = 'hidden' }}>
-            마음 전달하기 ▶
-          </button>
-
-          {/* Account Modal */}
-          {accountModal && (
-            <div className="mk-modal-overlay" onClick={() => { setAccountModal(false); document.body.style.overflow = '' }}>
-              <div className="mk-modal" onClick={e => e.stopPropagation()}>
-                <button className="mk-modal-close" onClick={() => { setAccountModal(false); document.body.style.overflow = '' }}>×</button>
-                <h3 className="mk-modal-title">마음 전달하기</h3>
-                <p className="mk-modal-sub">직접 축하의 마음을 전달하세요</p>
-                <div className="mk-modal-tabs">
-                  <button className={accountTab === 'groom' ? 'active' : ''} onClick={() => setAccountTab('groom')}>신랑에게</button>
-                  <button className={accountTab === 'bride' ? 'active' : ''} onClick={() => setAccountTab('bride')}>신부에게</button>
-                </div>
-                <div className="mk-modal-accounts">
-                  {weddingData.accounts?.[accountTab].map((acc, i) => {
-                    const key = `${accountTab}-${i}`
-                    return (
-                      <div key={key} className="mk-modal-card">
-                        <div className="mk-modal-card-top">
-                          <span className="mk-modal-card-name">{acc.name}</span>
-                          <span className="mk-modal-card-relation">{acc.relation}</span>
-                        </div>
-                        <div className="mk-modal-card-bottom">
-                          <span className="mk-modal-card-bank">{acc.bank}</span>
-                          <span className="mk-modal-card-account">
-                            {acc.account}
-                            <button className="mk-copy-btn" onClick={() => copyAccount(acc.account, key)}>
-                              {copiedIndex === key ? <i className="fa-solid fa-check" /> : <i className="fa-regular fa-copy" />}
-                            </button>
-                          </span>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
+        <div className="mk-invite-inner">
+          {/* 그룹1: Invitation + 텍스트 */}
+          <div className="mk-reveal">
+            <p className="mk-invite-title">Invitation</p>
+            <div className="mk-invite-text">
+              <p>상상만 해도 미소가 지어지는</p>
+              <p>선물 같은 사람을 만나</p>
+              <p>슬플 때나 기쁠 때나 함께하며</p>
+              <p>기꺼이 같은 길을 걸어가려 합니다.</p>
+              <br />
+              <p>작은 공통점으로 시작된 인연이</p>
+              <p>서로의 하루를 빛내는 이야기가 되어</p>
+              <p>동화 같은 사랑을 이어가려 합니다.</p>
+              <br />
+              <p>저희의 첫 장면에 소중한 당신을 초대합니다.</p>
             </div>
-          )}
-
-          {/* Gallery */}
-          <p className="mk-gallery-title">Gallery</p>
-
-          {/* Top feature photo - 반타원 */}
-          <div className="mk-gallery-top" onClick={() => openModal(0)}>
-            <img src="/images/gallery/top.webp" alt="갤러리 대표" loading="lazy" />
           </div>
 
-          {/* 4x5 grid */}
-          <div className="mk-gallery-grid">
-            {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
-              <div key={num} className="mk-gallery-item" onClick={() => openModal(num)}>
-                <img src={`/images/gallery/thumb/${num}.webp`} alt={`갤러리 ${num}`} loading="lazy" />
-              </div>
-            ))}
+          {/* 그룹2: 하트 + 부모/신랑신부 + 마음전달 버튼 */}
+          <div className="mk-reveal">
+            <p className="mk-couple-heart">&#9829;</p>
+            <div className="mk-invite-couple">
+              <p className="mk-parents">{weddingData.couple.groom.parents}의 아들</p>
+              <p className="mk-couple-name">{weddingData.couple.groom.name}</p>
+              <p className="mk-parents">{weddingData.couple.bride.parents}의 딸</p>
+              <p className="mk-couple-name">{weddingData.couple.bride.name}</p>
+            </div>
+            <button className="mk-heart-btn" onClick={() => { setAccountModal(true); document.body.style.overflow = 'hidden' }}>
+              마음 전달하기 ▶
+            </button>
+          </div>
+
+          {/* 그룹3: Gallery 타이틀 + 대표사진 + 그리드 */}
+          <div className="mk-reveal">
+            <p className="mk-gallery-title">Gallery</p>
+            <div className="mk-gallery-top" onClick={() => openModal(0)}>
+              <img src="/images/gallery/top.webp" alt="갤러리 대표" loading="lazy" />
+            </div>
+            <div className="mk-gallery-grid">
+              {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+                <div key={num} className="mk-gallery-item" onClick={() => openModal(num)}>
+                  <img src={`/images/gallery/thumb/${num}.webp`} alt={`갤러리 ${num}`} loading="lazy" />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
+
+      {/* ===== Account Modal ===== */}
+      {accountModal && (
+        <div className="mk-modal-overlay" onClick={() => { setAccountModal(false); document.body.style.overflow = '' }}>
+          <div className="mk-modal" onClick={e => e.stopPropagation()}>
+            <button className="mk-modal-close" onClick={() => { setAccountModal(false); document.body.style.overflow = '' }}>×</button>
+            <h3 className="mk-modal-title">마음 전달하기</h3>
+            <p className="mk-modal-sub">직접 축하의 마음을 전달하세요</p>
+            <div className="mk-modal-tabs">
+              <button className={accountTab === 'groom' ? 'active' : ''} onClick={() => setAccountTab('groom')}>신랑에게</button>
+              <button className={accountTab === 'bride' ? 'active' : ''} onClick={() => setAccountTab('bride')}>신부에게</button>
+            </div>
+            <div className="mk-modal-accounts">
+              {weddingData.accounts?.[accountTab].map((acc, i) => {
+                const key = `${accountTab}-${i}`
+                return (
+                  <div key={key} className="mk-modal-card">
+                    <div className="mk-modal-card-top">
+                      <span className="mk-modal-card-name">{acc.name}</span>
+                      <span className="mk-modal-card-relation">{acc.relation}</span>
+                    </div>
+                    <div className="mk-modal-card-bottom">
+                      <span className="mk-modal-card-bank">{acc.bank}</span>
+                      <span className="mk-modal-card-account">
+                        {acc.account}
+                        <button className="mk-copy-btn" onClick={() => copyAccount(acc.account, key)}>
+                          {copiedIndex === key ? <i className="fa-solid fa-check" /> : <i className="fa-regular fa-copy" />}
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ===== Gallery Lightbox ===== */}
       {selectedIndex !== null && (() => {

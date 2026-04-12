@@ -8,6 +8,8 @@ function WeddingCard() {
   const [accountModal, setAccountModal] = useState(false)
   const [accountTab, setAccountTab] = useState<'groom' | 'bride'>('groom')
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null)
+  const [slideClass, setSlideClass] = useState('')
+  const isSliding = useRef(false)
   const sparkleRef = useRef<HTMLCanvasElement>(null)
 
   // 별가루 Canvas 이펙트
@@ -144,8 +146,8 @@ function WeddingCard() {
   useEffect(() => {
     if (selectedIndex === null) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') { resetZoom(); setSelectedIndex((selectedIndex - 1 + total) % total) }
-      else if (e.key === 'ArrowRight') { resetZoom(); setSelectedIndex((selectedIndex + 1) % total) }
+      if (e.key === 'ArrowLeft') navigateTo('prev')
+      else if (e.key === 'ArrowRight') navigateTo('next')
       else if (e.key === 'Escape') closeModal()
     }
     window.addEventListener('keydown', onKey)
@@ -223,9 +225,8 @@ function WeddingCard() {
     if (imgScale.current > 1) return // 확대 중이면 스와이프 무시
     const diff = touchStartX.current - e.changedTouches[0].clientX
     if (Math.abs(diff) > 50) {
-      resetZoom()
-      if (diff > 0) setSelectedIndex(prev => prev !== null ? (prev + 1) % total : null)
-      else setSelectedIndex(prev => prev !== null ? (prev - 1 + total) % total : null)
+      if (diff > 0) navigateTo('next')
+      else navigateTo('prev')
     }
   }
 
@@ -233,6 +234,7 @@ function WeddingCard() {
     navigator.clipboard.writeText(account).then(() => {
       setCopiedIndex(key)
       setTimeout(() => setCopiedIndex(null), 1500)
+      alert('복사되었습니다')
     })
   }
 
@@ -245,6 +247,30 @@ function WeddingCard() {
     setSelectedIndex(null)
     document.body.style.overflow = ''
     resetZoom()
+  }
+
+  const navigateTo = (direction: 'prev' | 'next') => {
+    if (selectedIndex === null || isSliding.current) return
+    isSliding.current = true
+    resetZoom()
+    const outClass = direction === 'next' ? 'mk-slide-out-left' : 'mk-slide-out-right'
+    const inClass = direction === 'next' ? 'mk-slide-in-left' : 'mk-slide-in-right'
+    setSlideClass(outClass)
+    setTimeout(() => {
+      if (direction === 'next') setSelectedIndex(prev => prev !== null ? (prev + 1) % total : null)
+      else setSelectedIndex(prev => prev !== null ? (prev - 1 + total) % total : null)
+      setSlideClass(inClass)
+      setTimeout(() => { setSlideClass(''); isSliding.current = false }, 200)
+    }, 150)
+  }
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.stopPropagation()
+    const delta = e.deltaY > 0 ? -0.15 : 0.15
+    const newScale = Math.min(3, Math.max(1, imgScale.current + delta))
+    imgScale.current = newScale
+    if (newScale === 1) imgPos.current = { x: 0, y: 0 }
+    applyTransform()
   }
 
   return (
@@ -374,9 +400,9 @@ function WeddingCard() {
       {selectedIndex !== null && (
         <div className="mk-lightbox" onClick={closeModal} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
           <button className="mk-lb-close" onClick={closeModal}>×</button>
-          <button className="mk-lb-nav mk-lb-prev" onClick={e => { e.stopPropagation(); resetZoom(); setSelectedIndex((selectedIndex - 1 + total) % total) }}>‹</button>
-          <button className="mk-lb-nav mk-lb-next" onClick={e => { e.stopPropagation(); resetZoom(); setSelectedIndex((selectedIndex + 1) % total) }}>›</button>
-          <div className="mk-lb-content" onClick={e => e.stopPropagation()}>
+          <button className="mk-lb-nav mk-lb-prev" onClick={e => { e.stopPropagation(); navigateTo('prev') }}>‹</button>
+          <button className="mk-lb-nav mk-lb-next" onClick={e => { e.stopPropagation(); navigateTo('next') }}>›</button>
+          <div className={`mk-lb-content ${slideClass}`} onClick={e => e.stopPropagation()} onWheel={handleWheel}>
             <img ref={imgRef} src={`/images/gallery/${allImages[selectedIndex]}.webp`} alt="" style={{ touchAction: 'none' }} />
             <div className="mk-lb-counter">{selectedIndex + 1} / {total}</div>
           </div>
@@ -386,6 +412,7 @@ function WeddingCard() {
       {/* ===== Section 5: Location ===== */}
       <section className="mk-location">
         <p className="mk-loc-title mk-reveal"><span className="mk-loc-en">Location</span> 오시는길</p>
+        <p className="mk-loc-address mk-reveal">서울특별시 마포구 월드컵로 240 2층<br />(성산동 서울월드컵경기장 서측)</p>
 
         <div className="mk-loc-map mk-reveal">
           <iframe
@@ -428,7 +455,7 @@ function WeddingCard() {
             <p className="mk-text-blue">월드컵경기장 서문 진입 후 서측 1,2 주차장 이용</p>
             <p className="mk-loc-sub">주차접수대 등록 후 출차 (90분 무료)</p>
             <p className="mk-loc-sub">상암 월드컵 주경기장에 축구 경기·콘서트로 인해 주차장 만차 시 주차 요원의 안내 또는 발렛파킹 안내 드림</p>
-            <p className="mk-loc-sub">(외부 주차 2시간 30분 무료·발렛파킹 무료)</p>
+            <p className="mk-loc-sub">(외부 주차시 2시간 30분 무료·발렛파킹 무료)</p>
           </div>
         </div>
       </section>
@@ -439,7 +466,7 @@ function WeddingCard() {
         <div className="mk-notice-list mk-reveal">
           <div className="mk-notice-item">
             <h4>식사안내</h4>
-            <p>결혼 시작 30분전 연회장 오픈됩니다.</p>
+            <p>예식 시작 30분전 연회장 오픈됩니다.</p>
             <p>맛있는 식사 하고 가시길 바라겠습니다 ☺️</p>
           </div>
           <div className="mk-notice-item">

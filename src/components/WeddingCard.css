@@ -224,7 +224,7 @@
 
 .mk-invite-text {
   font-family: 'Gowun Dodum', serif;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   line-height: 2.2;
   color: #fff;
@@ -394,8 +394,9 @@
 }
 
 .mk-modal-card-account {
-  font-size: 13px;
-  color: #3B4871;;
+  font-size: 16px;
+  font-weight: 600;
+  color: #3B4871;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -520,6 +521,37 @@
   margin-top: 12px;
 }
 
+/* Lightbox slide animations */
+.mk-slide-out-left {
+  animation: slideOutLeft 150ms ease-in forwards;
+}
+.mk-slide-out-right {
+  animation: slideOutRight 150ms ease-in forwards;
+}
+.mk-slide-in-left {
+  animation: slideInLeft 200ms ease-out forwards;
+}
+.mk-slide-in-right {
+  animation: slideInRight 200ms ease-out forwards;
+}
+
+@keyframes slideOutLeft {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(-80px); opacity: 0; }
+}
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(80px); opacity: 0; }
+}
+@keyframes slideInLeft {
+  from { transform: translateX(80px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideInRight {
+  from { transform: translateX(-80px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
 /* ===== Section 5: Location ===== */
 .mk-location {
   padding: clamp(36px, 10vw, 56px) clamp(16px, 5vw, 24px);
@@ -538,6 +570,14 @@
   font-size: 24px;
   font-weight: 400;
   margin-right: 6px;
+}
+
+.mk-loc-address {
+  text-align: center;
+  font-size: clamp(13px, 3.5vw, 15px);
+  color: #555;
+  margin: 0 0 20px;
+  line-height: 1.7;
 }
 
 .mk-loc-map {
@@ -581,7 +621,7 @@
 }
 
 .mk-loc-details {
-  font-size: clamp(12px, 3.2vw, 14px);
+  font-size: clamp(14px, 3.8vw, 16px);
   line-height: 1.8;
 }
 
@@ -590,7 +630,7 @@
 }
 
 .mk-loc-block h4 {
-  font-size: clamp(13px, 3.5vw, 15px);
+  font-size: clamp(15px, 4vw, 17px);
   font-weight: 600;
   color: #1a2744;
   margin: 0 0 4px;
@@ -607,7 +647,7 @@
 
 .mk-loc-sub {
   color: #888 !important;
-  font-size: clamp(11px, 2.8vw, 13px) !important;
+  font-size: clamp(13px, 3.2vw, 15px) !important;
 }
 
 /* ===== Section 6: Notice ===== */
@@ -636,14 +676,14 @@
 }
 
 .mk-notice-item h4 {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #1a2744;
   margin: 0 0 4px;
 }
 
 .mk-notice-item p {
-  font-size: 13px;
+  font-size: 15px;
   color: #555;
   margin: 0;
   line-height: 1.6;

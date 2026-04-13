@@ -8,7 +8,6 @@ function WeddingCard() {
   const [accountModal, setAccountModal] = useState(false)
   const [accountTab, setAccountTab] = useState<'groom' | 'bride'>('groom')
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null)
-  const [slideClass, setSlideClass] = useState('')
   const isSliding = useRef(false)
   const sparkleRef = useRef<HTMLCanvasElement>(null)
 
@@ -164,6 +163,7 @@ function WeddingCard() {
   const lastPos = useRef({ x: 0, y: 0 })
   const wasPinch = useRef(false)
   const imgRef = useRef<HTMLImageElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const getDist = (t: React.TouchList) => {
     const dx = t[0].clientX - t[1].clientX
@@ -251,16 +251,33 @@ function WeddingCard() {
 
   const navigateTo = (direction: 'prev' | 'next') => {
     if (selectedIndex === null || isSliding.current) return
+    const el = contentRef.current
+    if (!el) return
     isSliding.current = true
     resetZoom()
-    const outClass = direction === 'next' ? 'mk-slide-out-left' : 'mk-slide-out-right'
-    const inClass = direction === 'next' ? 'mk-slide-in-left' : 'mk-slide-in-right'
-    setSlideClass(outClass)
+
+    // 1) slide out
+    el.style.transition = 'transform 150ms ease-in, opacity 150ms ease-in'
+    el.style.transform = direction === 'next' ? 'translateX(-80px)' : 'translateX(80px)'
+    el.style.opacity = '0'
+
     setTimeout(() => {
+      // 2) 이미지 교체 + 반대편에 배치 (트랜지션 없이)
+      el.style.transition = 'none'
+      el.style.transform = direction === 'next' ? 'translateX(80px)' : 'translateX(-80px)'
+
       if (direction === 'next') setSelectedIndex(prev => prev !== null ? (prev + 1) % total : null)
       else setSelectedIndex(prev => prev !== null ? (prev - 1 + total) % total : null)
-      setSlideClass(inClass)
-      setTimeout(() => { setSlideClass(''); isSliding.current = false }, 200)
+
+      // 3) reflow 후 slide in
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.style.transition = 'transform 200ms ease-out, opacity 200ms ease-out'
+          el.style.transform = 'translateX(0)'
+          el.style.opacity = '1'
+          setTimeout(() => { isSliding.current = false }, 200)
+        })
+      })
     }, 150)
   }
 
@@ -402,7 +419,7 @@ function WeddingCard() {
           <button className="mk-lb-close" onClick={closeModal}>×</button>
           <button className="mk-lb-nav mk-lb-prev" onClick={e => { e.stopPropagation(); navigateTo('prev') }}>‹</button>
           <button className="mk-lb-nav mk-lb-next" onClick={e => { e.stopPropagation(); navigateTo('next') }}>›</button>
-          <div className={`mk-lb-content ${slideClass}`} onClick={e => e.stopPropagation()} onWheel={handleWheel}>
+          <div ref={contentRef} className="mk-lb-content" onClick={e => e.stopPropagation()} onWheel={handleWheel}>
             <img ref={imgRef} src={`/images/gallery/${allImages[selectedIndex]}.webp`} alt="" style={{ touchAction: 'none' }} />
             <div className="mk-lb-counter">{selectedIndex + 1} / {total}</div>
           </div>

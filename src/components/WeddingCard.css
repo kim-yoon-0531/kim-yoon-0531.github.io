@@ -224,7 +224,7 @@
 
 .mk-invite-text {
   font-family: 'Gowun Dodum', serif;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 2.2;
   color: #fff;
@@ -521,36 +521,6 @@
   margin-top: 12px;
 }
 
-/* Lightbox slide animations */
-.mk-slide-out-left {
-  animation: slideOutLeft 150ms ease-in forwards;
-}
-.mk-slide-out-right {
-  animation: slideOutRight 150ms ease-in forwards;
-}
-.mk-slide-in-left {
-  animation: slideInLeft 200ms ease-out forwards;
-}
-.mk-slide-in-right {
-  animation: slideInRight 200ms ease-out forwards;
-}
-
-@keyframes slideOutLeft {
-  from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(-80px); opacity: 0; }
-}
-@keyframes slideOutRight {
-  from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(80px); opacity: 0; }
-}
-@keyframes slideInLeft {
-  from { transform: translateX(80px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-@keyframes slideInRight {
-  from { transform: translateX(-80px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
 
 /* ===== Section 5: Location ===== */
 .mk-location {

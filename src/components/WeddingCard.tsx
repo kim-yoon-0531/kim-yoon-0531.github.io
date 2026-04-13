@@ -9,6 +9,7 @@ function WeddingCard() {
   const [accountTab, setAccountTab] = useState<'groom' | 'bride'>('groom')
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null)
   const isSliding = useRef(false)
+  const pendingSlide = useRef<'prev' | 'next' | null>(null)
   const sparkleRef = useRef<HTMLCanvasElement>(null)
 
   // 별가루 Canvas 이펙트
@@ -255,6 +256,7 @@ function WeddingCard() {
     if (!el) return
     isSliding.current = true
     resetZoom()
+    pendingSlide.current = direction
 
     // 1) slide out
     el.style.transition = 'transform 150ms ease-in, opacity 150ms ease-in'
@@ -262,24 +264,29 @@ function WeddingCard() {
     el.style.opacity = '0'
 
     setTimeout(() => {
-      // 2) 이미지 교체 + 반대편에 배치 (트랜지션 없이)
+      // 2) 반대편에 배치 (트랜지션 없이) + 이미지 교체
       el.style.transition = 'none'
       el.style.transform = direction === 'next' ? 'translateX(80px)' : 'translateX(-80px)'
 
       if (direction === 'next') setSelectedIndex(prev => prev !== null ? (prev + 1) % total : null)
       else setSelectedIndex(prev => prev !== null ? (prev - 1 + total) % total : null)
-
-      // 3) reflow 후 slide in
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          el.style.transition = 'transform 200ms ease-out, opacity 200ms ease-out'
-          el.style.transform = 'translateX(0)'
-          el.style.opacity = '1'
-          setTimeout(() => { isSliding.current = false }, 200)
-        })
-      })
     }, 150)
   }
+
+  // React 렌더 완료 후 slide in
+  useEffect(() => {
+    if (!pendingSlide.current) return
+    const el = contentRef.current
+    if (!el) return
+    pendingSlide.current = null
+
+    requestAnimationFrame(() => {
+      el.style.transition = 'transform 200ms ease-out, opacity 200ms ease-out'
+      el.style.transform = 'translateX(0)'
+      el.style.opacity = '1'
+      setTimeout(() => { isSliding.current = false }, 200)
+    })
+  }, [selectedIndex])
 
   const handleWheel = (e: React.WheelEvent) => {
     e.stopPropagation()

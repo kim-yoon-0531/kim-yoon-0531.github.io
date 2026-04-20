@@ -5,11 +5,12 @@ import './WeddingCard.css'
 function WeddingCard() {
   const [dDay, setDDay] = useState(0)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+  const [incomingIndex, setIncomingIndex] = useState<number | null>(null)
+  const [slideDir, setSlideDir] = useState<'prev' | 'next' | null>(null)
   const [accountModal, setAccountModal] = useState(false)
   const [accountTab, setAccountTab] = useState<'groom' | 'bride'>('groom')
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null)
   const isSliding = useRef(false)
-  const pendingSlide = useRef<'prev' | 'next' | null>(null)
   const sparkleRef = useRef<HTMLCanvasElement>(null)
 
   // 별가루 Canvas 이펙트
@@ -154,6 +155,17 @@ function WeddingCard() {
     return () => window.removeEventListener('keydown', onKey)
   }, [selectedIndex])
 
+  // 인접 이미지 프리로드 (슬라이드 시 디코딩 지연으로 인한 끊김 방지)
+  useEffect(() => {
+    if (selectedIndex === null) return
+    const preload = (idx: number) => {
+      const img = new Image()
+      img.src = `/images/gallery/${allImages[idx]}.webp`
+    }
+    preload((selectedIndex + 1) % total)
+    preload((selectedIndex - 1 + total) % total)
+  }, [selectedIndex])
+
   // 핀치 줌 + 스와이프
   const imgScale = useRef(1)
   const imgPos = useRef({ x: 0, y: 0 })
@@ -164,7 +176,6 @@ function WeddingCard() {
   const lastPos = useRef({ x: 0, y: 0 })
   const wasPinch = useRef(false)
   const imgRef = useRef<HTMLImageElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
 
   const getDist = (t: React.TouchList) => {
     const dx = t[0].clientX - t[1].clientX
@@ -252,41 +263,33 @@ function WeddingCard() {
 
   const navigateTo = (direction: 'prev' | 'next') => {
     if (selectedIndex === null || isSliding.current) return
-    const el = contentRef.current
-    if (!el) return
     isSliding.current = true
     resetZoom()
-    pendingSlide.current = direction
 
-    // 1) slide out
-    el.style.transition = 'transform 150ms ease-in, opacity 150ms ease-in'
-    el.style.transform = direction === 'next' ? 'translateX(-80px)' : 'translateX(80px)'
-    el.style.opacity = '0'
+    const nextIdx = direction === 'next'
+      ? (selectedIndex + 1) % total
+      : (selectedIndex - 1 + total) % total
 
+    setIncomingIndex(nextIdx)
+    setSlideDir(direction)
+
+    // 애니메이션 끝난 직후 current의 src를 먼저 갈아끼움 (여전히 화면 밖)
     setTimeout(() => {
-      // 2) 반대편에 배치 (트랜지션 없이) + 이미지 교체
-      el.style.transition = 'none'
-      el.style.transform = direction === 'next' ? 'translateX(80px)' : 'translateX(-80px)'
+      setSelectedIndex(nextIdx)
 
-      if (direction === 'next') setSelectedIndex(prev => prev !== null ? (prev + 1) % total : null)
-      else setSelectedIndex(prev => prev !== null ? (prev - 1 + total) % total : null)
-    }, 150)
+      // DOM 반영 후, current 이미지 디코딩 완료될 때까지 대기
+      requestAnimationFrame(() => {
+        const img = imgRef.current
+        const finalize = () => {
+          setIncomingIndex(null)
+          setSlideDir(null)
+          isSliding.current = false
+        }
+        if (img?.decode) img.decode().then(finalize).catch(finalize)
+        else finalize()
+      })
+    }, 300)
   }
-
-  // React 렌더 완료 후 slide in
-  useEffect(() => {
-    if (!pendingSlide.current) return
-    const el = contentRef.current
-    if (!el) return
-    pendingSlide.current = null
-
-    requestAnimationFrame(() => {
-      el.style.transition = 'transform 200ms ease-out, opacity 200ms ease-out'
-      el.style.transform = 'translateX(0)'
-      el.style.opacity = '1'
-      setTimeout(() => { isSliding.current = false }, 200)
-    })
-  }, [selectedIndex])
 
   const handleWheel = (e: React.WheelEvent) => {
     e.stopPropagation()
@@ -426,9 +429,26 @@ function WeddingCard() {
           <button className="mk-lb-close" onClick={closeModal}>×</button>
           <button className="mk-lb-nav mk-lb-prev" onClick={e => { e.stopPropagation(); navigateTo('prev') }}>‹</button>
           <button className="mk-lb-nav mk-lb-next" onClick={e => { e.stopPropagation(); navigateTo('next') }}>›</button>
-          <div ref={contentRef} className="mk-lb-content" onClick={e => e.stopPropagation()} onWheel={handleWheel}>
-            <img ref={imgRef} src={`/images/gallery/${allImages[selectedIndex]}.webp`} alt="" style={{ touchAction: 'none' }} />
-            <div className="mk-lb-counter">{selectedIndex + 1} / {total}</div>
+          <div className="mk-lb-content" onClick={e => e.stopPropagation()} onWheel={handleWheel}>
+            <div className="mk-lb-viewport">
+              <img
+                ref={imgRef}
+                className={`mk-lb-img${slideDir ? ` mk-lb-out-${slideDir}` : ''}`}
+                src={`/images/gallery/${allImages[selectedIndex]}.webp`}
+                alt=""
+                decoding="async"
+                style={{ touchAction: 'none' }}
+              />
+              {incomingIndex !== null && slideDir && (
+                <img
+                  className={`mk-lb-img mk-lb-in-${slideDir}`}
+                  src={`/images/gallery/${allImages[incomingIndex]}.webp`}
+                  alt=""
+                  decoding="async"
+                />
+              )}
+            </div>
+            <div className="mk-lb-counter">{(incomingIndex ?? selectedIndex) + 1} / {total}</div>
           </div>
         </div>
       )}

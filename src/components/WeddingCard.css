@@ -508,11 +508,44 @@
   text-align: center;
 }
 
-.mk-lb-content img {
-  max-width: 100%;
-  max-height: 80vh;
+.mk-lb-viewport {
+  position: relative;
+  width: 90vw;
+  max-width: 90vw;
+  height: 80vh;
+  overflow: hidden;
+}
+
+.mk-lb-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   border-radius: 4px;
+  will-change: transform;
+}
+
+.mk-lb-out-next { animation: mk-lb-out-next 300ms ease-out forwards; }
+.mk-lb-out-prev { animation: mk-lb-out-prev 300ms ease-out forwards; }
+.mk-lb-in-next  { animation: mk-lb-in-next  300ms ease-out forwards; }
+.mk-lb-in-prev  { animation: mk-lb-in-prev  300ms ease-out forwards; }
+
+@keyframes mk-lb-out-next {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+@keyframes mk-lb-out-prev {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+@keyframes mk-lb-in-next {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes mk-lb-in-prev {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
 }
 
 .mk-lb-counter {

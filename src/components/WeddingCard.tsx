@@ -497,9 +497,10 @@ function WeddingCard() {
           <div className="mk-loc-block">
             <h4>자동차</h4>
             <p className="mk-text-blue">월드컵경기장 서문 진입 후 서측 1,2 주차장 이용</p>
-            <p className="mk-loc-sub">주차접수대 등록 후 출차 (90분 무료)</p>
-            <p className="mk-loc-sub">상암 월드컵 주경기장에 축구 경기·콘서트로 인해 주차장 만차 시 주차 요원의 안내 또는 발렛파킹 안내 드림</p>
+            <p className="mk-loc-sub">주차접수대 등록 후 출차 (90분 무료, 추가 시간 10분당 300원부과)</p>
+            <p className="mk-loc-sub">상암 월드컵 주경기장에 축구 경기·콘서트로 인해 주차장 만차 시 </p>
             <p className="mk-loc-sub">(외부 주차시 2시간 30분 무료·발렛파킹 무료)</p>
+            <p className="mk-loc-sub">※ 홈플러스 주차장은 무료 주차 불가합니다.</p>
           </div>
         </div>
       </section>

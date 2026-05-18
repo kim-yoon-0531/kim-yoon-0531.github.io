@@ -4,8 +4,8 @@ import WeddingDayCard from './components/WeddingDayCard'
 
 // 예식 당일(2026-05-31) 00:00 ~ 13:00 KST에는 간략 페이지 노출
 function isWeddingDayWindow(now: Date = new Date()): boolean {
-  const kstMs = now.getTime() + (now.getTimezoneOffset() + 540) * 60000
-  const kst = new Date(kstMs)
+  // UTC 기준 ms에 KST 오프셋(+9h)만 더하면 어떤 타임존 사용자든 KST 시각으로 변환됨
+  const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000)
   return (
     kst.getUTCFullYear() === 2026 &&
     kst.getUTCMonth() === 4 &&

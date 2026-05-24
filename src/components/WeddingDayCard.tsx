@@ -34,10 +34,10 @@ function WeddingDayCard({ mode }: Props) {
               이날을 위해 1329일을 기다렸습니다.
             </p>
             <p className="mk-day-greeting-sub">
-              저희는 떨리는 마음으로 내일을 기다립니다.
+              먼 길 와주실 모든 분들께 진심으로 감사드립니다.
             </p>
             <p className="mk-day-thanks">
-              먼길 발걸음 해주셔서 감사합니다.<br />
+              저희는 떨리는 마음으로 내일을 기다립니다.<br />
               환한 얼굴로 인사드리겠습니다.
             </p>
           </>

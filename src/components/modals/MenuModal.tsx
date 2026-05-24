@@ -1,5 +1,3 @@
-import { useRef, useState } from 'react'
-
 type Props = {
   open: boolean
   onClose: () => void
@@ -17,75 +15,7 @@ const menuItems = [
 ]
 
 function MenuModal({ open, onClose }: Props) {
-  const [zoomIdx, setZoomIdx] = useState<number | null>(null)
-  const imgRef = useRef<HTMLImageElement>(null)
-  const scale = useRef(1)
-  const pos = useRef({ x: 0, y: 0 })
-  const last = useRef({ x: 0, y: 0 })
-  const touchStart = useRef({ x: 0, y: 0 })
-  const pinchStartDist = useRef(0)
-  const pinchStartScale = useRef(1)
-
   if (!open) return null
-
-  const apply = () => {
-    if (!imgRef.current) return
-    imgRef.current.style.transform = `translate(${pos.current.x}px, ${pos.current.y}px) scale(${scale.current})`
-  }
-  const reset = () => {
-    scale.current = 1
-    pos.current = { x: 0, y: 0 }
-    if (imgRef.current) imgRef.current.style.transform = ''
-  }
-  const getDist = (t: React.TouchList) => {
-    const dx = t[0].clientX - t[1].clientX
-    const dy = t[0].clientY - t[1].clientY
-    return Math.sqrt(dx * dx + dy * dy)
-  }
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 2) {
-      pinchStartDist.current = getDist(e.touches)
-      pinchStartScale.current = scale.current
-    } else if (e.touches.length === 1) {
-      touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
-      last.current = { ...pos.current }
-    }
-  }
-  const onTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 2) {
-      const d = getDist(e.touches)
-      const ns = Math.min(4, Math.max(1, pinchStartScale.current * (d / pinchStartDist.current)))
-      scale.current = ns
-      if (ns === 1) pos.current = { x: 0, y: 0 }
-      apply()
-    } else if (e.touches.length === 1 && scale.current > 1) {
-      const dx = e.touches[0].clientX - touchStart.current.x
-      const dy = e.touches[0].clientY - touchStart.current.y
-      pos.current = { x: last.current.x + dx, y: last.current.y + dy }
-      apply()
-    }
-  }
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
-      last.current = { ...pos.current }
-    }
-  }
-  const onWheel = (e: React.WheelEvent) => {
-    const ns = Math.min(4, Math.max(1, scale.current - e.deltaY * 0.002))
-    scale.current = ns
-    if (ns === 1) pos.current = { x: 0, y: 0 }
-    apply()
-  }
-  const onDoubleClick = () => {
-    scale.current = scale.current > 1 ? 1 : 2
-    if (scale.current === 1) pos.current = { x: 0, y: 0 }
-    apply()
-  }
-
-  const openZoom = (i: number) => { reset(); setZoomIdx(i) }
-  const closeZoom = () => { reset(); setZoomIdx(null) }
 
   return (
     <div className="mk-modal-overlay" onClick={onClose}>
@@ -95,9 +25,9 @@ function MenuModal({ open, onClose }: Props) {
         <p className="mk-modal-sub">신랑 &amp; 신부의 추천메뉴</p>
 
         <div className="mk-menu-grid">
-          {menuItems.map((item, i) => (
+          {menuItems.map(item => (
             <div key={item.name} className="mk-menu-item">
-              <div className="mk-menu-photo" onClick={() => openZoom(i)}>
+              <div className="mk-menu-photo">
                 <img src={item.img} alt={item.name} loading="lazy" />
               </div>
               <p className="mk-menu-name">{item.name}</p>
@@ -112,32 +42,6 @@ function MenuModal({ open, onClose }: Props) {
           부담없이 즐겨주세요 🍻
         </p>
       </div>
-
-      {zoomIdx !== null && (
-        <div className="mk-lightbox" onClick={closeZoom}>
-          <button className="mk-lb-close" onClick={closeZoom}>×</button>
-          <div
-            className="mk-lb-content"
-            onClick={e => e.stopPropagation()}
-            onWheel={onWheel}
-            onDoubleClick={onDoubleClick}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-          >
-            <div className="mk-lb-viewport">
-              <img
-                ref={imgRef}
-                className="mk-lb-img"
-                src={menuItems[zoomIdx].img}
-                alt={menuItems[zoomIdx].name}
-                style={{ touchAction: 'none' }}
-              />
-            </div>
-            <div className="mk-lb-counter">{menuItems[zoomIdx].name}</div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

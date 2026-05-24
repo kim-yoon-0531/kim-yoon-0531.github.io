@@ -194,12 +194,6 @@
   border-radius: 50%;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  cursor: zoom-in;
-  transition: transform 0.15s ease;
-}
-
-.mk-menu-photo:active {
-  transform: scale(0.96);
 }
 
 .mk-menu-photo img {

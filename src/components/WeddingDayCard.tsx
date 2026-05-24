@@ -8,9 +8,11 @@ import './WeddingCard.css'
 import './WeddingDayCard.css'
 
 type ModalKey = 'location' | 'notice' | 'menu' | 'account' | null
+type Props = { mode: 'eve' | 'day' }
 
-function WeddingDayCard() {
+function WeddingDayCard({ mode }: Props) {
   const [activeModal, setActiveModal] = useState<ModalKey>(null)
+  const isEve = mode === 'eve'
 
   const open = (key: Exclude<ModalKey, null>) => {
     setActiveModal(key)
@@ -25,17 +27,35 @@ function WeddingDayCard() {
     <div className="mk-wrapper mk-day-wrapper">
       <section className="mk-day-intro">
         <p className="mk-day-today">Wedding Day</p>
-        <p className="mk-day-greeting">
-          기다리던 오늘,<br />
-          저희의 시작을 알리는 날입니다.
-        </p>
-        <p className="mk-day-thanks">
-          함께 축복해주셔서 진심으로 감사합니다.
-        </p>
-        <p className="mk-day-careful">
-          설레는 마음으로 기다리고 있겠습니다.<br />
-          오시는 길 조심히 와주세요 :)
-        </p>
+        {isEve ? (
+          <>
+            <p className="mk-day-greeting">
+              D-1<br />
+              이날을 위해 1329일을 기다렸습니다.
+            </p>
+            <p className="mk-day-greeting-sub">
+              저희는 떨리는 마음으로 내일을 기다립니다.
+            </p>
+            <p className="mk-day-thanks">
+              먼길 발걸음 해주셔서 감사합니다.<br />
+              환한 얼굴로 인사드리겠습니다.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="mk-day-greeting">
+              기다리던 오늘,<br />
+              저희의 시작을 알리는 날입니다.
+            </p>
+            <p className="mk-day-thanks">
+              함께 축복해주셔서 진심으로 감사합니다.
+            </p>
+            <p className="mk-day-careful">
+              설레는 마음으로 기다리고 있겠습니다.<br />
+              오시는 길 조심히 와주세요 :)
+            </p>
+          </>
+        )}
         <div className="mk-day-divider" />
         <p className="mk-day-couple">
           {weddingData.couple.groom.name} &nbsp;·&nbsp; {weddingData.couple.bride.name}

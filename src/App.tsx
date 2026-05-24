@@ -2,22 +2,23 @@ import './App.css'
 import WeddingCard from './components/WeddingCard'
 import WeddingDayCard from './components/WeddingDayCard'
 
-// 예식 당일(2026-05-31) 00:00 ~ 13:00 KST에는 간략 페이지 노출
-function isWeddingDayWindow(now: Date = new Date()): boolean {
-  // UTC 기준 ms에 KST 오프셋(+9h)만 더하면 어떤 타임존 사용자든 KST 시각으로 변환됨
-  const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000)
-  return (
-    kst.getUTCFullYear() === 2026 &&
-    kst.getUTCMonth() === 4 &&
-    kst.getUTCDate() === 31 &&
-    kst.getUTCHours() < 13
-  )
+// 2026-05-30 12:00 ~ 05-31 00:00 KST: D-1 (eve)
+// 2026-05-31 00:00 ~ 05-31 13:00 KST: 당일 (day)
+function getWeddingWindow(now: Date = new Date()): 'eve' | 'day' | null {
+  const eveStart = new Date('2026-05-30T12:00:00+09:00').getTime()
+  const dayStart = new Date('2026-05-31T00:00:00+09:00').getTime()
+  const dayEnd = new Date('2026-05-31T13:00:00+09:00').getTime()
+  const t = now.getTime()
+  if (t >= eveStart && t < dayStart) return 'eve'
+  if (t >= dayStart && t < dayEnd) return 'day'
+  return null
 }
 
-// ?day → 당일 페이지 강제, ?normal → 기존 페이지 강제
-function getPreviewOverride(): 'day' | 'normal' | null {
+// ?eve → D-1 강제, ?day → 당일 강제, ?normal → 기존 페이지 강제
+function getPreviewOverride(): 'eve' | 'day' | 'normal' | null {
   if (typeof window === 'undefined') return null
   const params = new URLSearchParams(window.location.search)
+  if (params.has('eve')) return 'eve'
   if (params.has('day')) return 'day'
   if (params.has('normal')) return 'normal'
   return null
@@ -25,8 +26,10 @@ function getPreviewOverride(): 'day' | 'normal' | null {
 
 function App() {
   const override = getPreviewOverride()
-  const showDay = override ? override === 'day' : isWeddingDayWindow()
-  return showDay ? <WeddingDayCard /> : <WeddingCard />
+  const mode = override === 'normal'
+    ? null
+    : (override ?? getWeddingWindow())
+  return mode ? <WeddingDayCard mode={mode} /> : <WeddingCard />
 }
 
 export default App

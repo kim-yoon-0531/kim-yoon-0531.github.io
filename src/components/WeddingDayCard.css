@@ -32,6 +32,14 @@
   font-weight: 500;
 }
 
+.mk-day-greeting-sub {
+  font-size: clamp(15px, 4.2vw, 17px);
+  line-height: 1.8;
+  margin: 0 0 clamp(20px, 5vw, 28px);
+  font-weight: 500;
+  opacity: 0.95;
+}
+
 .mk-day-thanks {
   font-size: clamp(14px, 3.8vw, 16px);
   line-height: 1.8;

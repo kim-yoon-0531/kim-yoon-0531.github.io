@@ -5,7 +5,7 @@ import WeddingDayCard from './components/WeddingDayCard'
 // 2026-05-30 12:00 ~ 05-31 00:00 KST: D-1 (eve)
 // 2026-05-31 00:00 ~ 05-31 13:00 KST: 당일 (day)
 function getWeddingWindow(now: Date = new Date()): 'eve' | 'day' | null {
-  const eveStart = new Date('2026-05-30T12:00:00+09:00').getTime()
+  const eveStart = new Date('2026-05-30T00:00:00+09:00').getTime()
   const dayStart = new Date('2026-05-31T00:00:00+09:00').getTime()
   const dayEnd = new Date('2026-05-31T13:00:00+09:00').getTime()
   const t = now.getTime()

@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import './App.css'
 import WeddingCard from './components/WeddingCard'
 import WeddingDayCard from './components/WeddingDayCard'
+import EntryAlertModal from './components/modals/EntryAlertModal'
 
 // 2026-05-30 12:00 ~ 05-31 00:00 KST: D-1 (eve)
 // 2026-05-31 00:00 ~ 05-31 13:00 KST: 당일 (day)
@@ -29,7 +31,15 @@ function App() {
   const mode = override === 'normal'
     ? null
     : (override ?? getWeddingWindow())
-  return mode ? <WeddingDayCard mode={mode} /> : <WeddingCard />
+
+  const [alertOpen, setAlertOpen] = useState(true)
+
+  return (
+    <>
+      {mode ? <WeddingDayCard mode={mode} /> : <WeddingCard />}
+      <EntryAlertModal open={alertOpen} onClose={() => setAlertOpen(false)} />
+    </>
+  )
 }
 
 export default App
